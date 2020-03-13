@@ -8,7 +8,6 @@ import constants from '../../../utils/constants'
 import mongoose from 'mongoose'
 import uuidv1 from 'uuid/v1'
 import model from '../../../models/sqlDB/index'
-import client from '../../../models/redisClient/redis'
 import { updatePassword } from '../../../utils/updateHashPassword'
 
 /**

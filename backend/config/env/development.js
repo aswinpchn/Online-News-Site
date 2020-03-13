@@ -13,10 +13,10 @@ module.exports = {
 		dialect: process.env.DB_DIALECT,
 	},
 	sql: {
-		host: "13.59.60.222",
+		host: "mydbinstance.cwotr7vrym6h.us-west-1.rds.amazonaws.com:3306",
 		user: "root",
-		password: "!by14CS053",
-		database: "grubhub"
+		password: "12345678",
+		database: "news"
 	},
 	frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000", // For now no use of frontend urls in backend, when security is tighetened, add expected urls to cors.
 }

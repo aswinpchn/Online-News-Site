@@ -49,5 +49,5 @@ app.use(function (err, req, res) {
 	res.render('error')
 })
 
-app.listen(config.port, () => console.log(`Twitter server listening on ${port}`))
+app.listen(config.port, () => console.log(`NewsPaper server listening on ${port}`))
 module.exports = app
