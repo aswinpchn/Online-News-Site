@@ -7,6 +7,15 @@ import model from '../../../models/sqlDB/index'
 import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword, validatePassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'
+import log4js from 'log4js';
+
+exports.dummy = async(req, res) => {
+	const logger = log4js.getLogger('log');
+	logger.info('Inside the dummy method in user!');
+	return res
+		.status(constants.STATUS_CODE.ACCEPTED_STATUS)
+		.send("Dummy")
+}
 
 /**
  * Create user and save data in database.

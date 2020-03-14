@@ -3,3 +3,6 @@
 
 # env file
 .env
+
+# log file
+file.log
