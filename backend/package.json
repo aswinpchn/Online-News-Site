@@ -1,5 +1,5 @@
 {
-  "name": "twitter",
+  "name": "NewsPaper",
   "version": "1.0.0",
   "private": true,
   "scripts": {
@@ -21,30 +21,16 @@
     "dotenv": "^8.1.0",
     "express": "~4.16.1",
     "express-validation": "^1.0.2",
-    "fs": "0.0.1-security",
     "http-errors": "~1.6.3",
     "joi": "^14.3.1",
-    "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.15",
     "mocha": "^6.2.1",
     "mongoose": "^5.7.5",
     "mongoose-type-email": "^1.0.11",
-    "morgan": "~1.9.1",
-    "multer": "^1.4.2",
-    "multer-s3": "^2.9.0",
+    "morgan": "^1.9.1",
     "mysql": "^2.18.1",
-    "mysql2": "^1.7.0",
     "nodemon": "^1.19.4",
-    "passport": "^0.4.0",
-    "passport-jwt": "^4.0.0",
-    "path": "^0.12.7",
-    "sequelize": "^5.19.0",
+    "password-hash": "^1.2.2",
     "uuid": "^3.3.3"
-  },
-  "devDependencies": {
-    "eslint": "^6.7.2",
-    "eslint-config-airbnb-base": "^14.0.0",
-    "eslint-nibble": "^5.1.0",
-    "eslint-plugin-import": "^2.18.2"
   }
 }

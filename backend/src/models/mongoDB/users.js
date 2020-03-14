@@ -3,7 +3,6 @@
 import mongoose from 'mongoose'
 import bcrypt from 'bcryptjs'
 import config from '../../../config'
-import jwt from 'jsonwebtoken'
 require('mongoose-type-email');
 
 const Users = new mongoose.Schema({

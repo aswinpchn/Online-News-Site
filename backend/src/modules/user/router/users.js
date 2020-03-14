@@ -6,8 +6,9 @@ import userController from '../controller/users'
 import validator from '../validator'
 import validation from 'express-validation'
 
-router.post('/signup', validation(validator['signup']), userController.createUser)
-router.post('/login', validation(validator['login']), userController.loginUser)
-router.put('/logout',  validation(validator['logout']), userController.logout)
+router.post('/signup', userController.createUser)
+router.post('/login', userController.loginUser)
+router.get('/profile/:userId', userController.getUserProfile)
+router.post('/update', userController.updateUserProfile)
 
 module.exports = router

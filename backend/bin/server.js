@@ -10,6 +10,7 @@ import constants from '../src/utils/constants'
 
 // router for modules
 let usersRouter = require('../src/modules/user/router/users')
+let editorsRouter = require('../src/modules/editor/router/editors')
 
 // database connections
 require('../src/models/mongoDB/index')
@@ -32,6 +33,7 @@ app.use(cors({ origin: '*', credentials: false }));
 
 // base routes for modules
 app.use('/users', usersRouter)
+app.use('/editors', editorsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
