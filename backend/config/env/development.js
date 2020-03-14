@@ -13,10 +13,11 @@ module.exports = {
 		dialect: process.env.DB_DIALECT,
 	},
 	sql: {
-		host: "mydbinstance.cwotr7vrym6h.us-west-1.rds.amazonaws.com:3306",
-		user: "root",
-		password: "12345678",
-		database: "news"
+		host: process.env.RDS_HOST,
+		user: process.env.RDS_USER,
+		password: process.env.RDS_PASSWORD,
+		database: process.env.RDS_DATABASE,
+		port: process.env.RDS_PORT
 	},
 	frontendUrl: process.env.FRONTEND_URL || "http://localhost:3000", // For now no use of frontend urls in backend, when security is tighetened, add expected urls to cors.
 }

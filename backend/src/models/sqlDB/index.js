@@ -3,10 +3,11 @@
 var mysql = require('mysql');
 
 var con = mysql.createConnection({
-	host: "13.59.60.222",
-	user: "root",
-	password: "!by14CS053",
-	database: "grubhub"
+	host: process.env.RDS_HOST,
+	user: process.env.RDS_USER,
+	password: process.env.RDS_PASSWORD,
+	database: process.env.RDS_DATABASE,
+	port: process.env.RDS_PORT
 });
 
 con.connect(function(err) {
