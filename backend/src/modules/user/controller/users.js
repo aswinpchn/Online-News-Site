@@ -9,6 +9,15 @@ import mongoose from 'mongoose'
 import uuidv1 from 'uuid/v1'
 import model from '../../../models/sqlDB/index'
 import { updatePassword } from '../../../utils/updateHashPassword'
+import log4js from 'log4js';
+
+exports.dummy = async(req, res) => {
+	const logger = log4js.getLogger('log');
+	logger.info('Inside the dummy method in user!');
+	return res
+		.status(constants.STATUS_CODE.ACCEPTED_STATUS)
+		.send("Dummy")
+}
 
 /**
  * Create user and save data in database.
