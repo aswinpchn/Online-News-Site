@@ -11,5 +11,6 @@ router.post('/signup', userController.createUser)
 router.post('/login', userController.loginUser)
 router.get('/profile/:userId', userController.getUserProfile)
 router.post('/update', userController.updateUserProfile)
+router.post('/notifications/:userId', userController.updateUserProfile)
 
 module.exports = router

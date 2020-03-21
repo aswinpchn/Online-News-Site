@@ -198,3 +198,36 @@ exports.updateUserProfile = async (req, res) => {
 			.send(error.message)
 	}
 }
+
+/**
+ * Get notifications for user based on userid.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getNotifications = async (req, res) => {
+	var query
+	try {
+		query = "\
+			SELECT name, article_id, editor_id, headlines, c_time " +
+			"FROM comments NATURAL JOIN ( " +
+				"SELECT min(c_time) AS mintime, editor_id, article_id " +
+				"FROM comments " + 
+				"WHERE user_id =" + req.params.userId +
+				"GROUP BY editor_id, article_id " +
+			") A NATURAL JOIN article NATURAL JOIN user" +
+			"WHERE user_id != " + req.params.userId + " AND mintime <= c_time;";
+		let details = await SQLHelper(query)
+
+		if (details.length > 0) {
+			details = details[0]
+			return res.status(200).send(details)
+		} else {
+			return res.status(204).json()
+		}
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message)
+	}
+}
