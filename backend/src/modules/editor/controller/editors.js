@@ -34,7 +34,7 @@ exports.createEditor = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
-		query = "INSERT INTO user (name, email, password) VALUES ('" + userData.name + "', '" + userData.email + "', '" + userData.password + "')"
+		query = "INSERT INTO editor (name, email, password) VALUES ('" + userData.name + "', '" + userData.email + "', '" + userData.password + "')"
 		await SQLHelper(query)
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
