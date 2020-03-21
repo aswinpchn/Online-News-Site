@@ -72,7 +72,7 @@ exports.saveArticle = async (req, res) => {
 }
 
 /**
- * Save a article written by the editor in database.
+ * Update a article written by the editor in database.
  * @param  {Object} req request object
  * @param  {Object} res response object
  */
@@ -108,6 +108,126 @@ exports.modifyArticle = async (req, res) => {
 			.send("Updated Article Successfully")
 	} catch (error) {
 		console.log(`Error while saving article ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message)
+	}
+
+}
+
+/**
+ * Update a article written by the editor in database.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getHeadlines = async (req, res) => {
+
+	var query
+	try {
+		
+		var type = req.query.type
+		
+		if(type.toLowerCase() == 'all'){
+			query = "SELECT article_id,editor_id,headlines FROM article"
+			var allheadline = await SQLHelper(query)
+			return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(allheadline)
+		}else{
+			query = "SELECT name FROM category WHERE name='" + type +"'"
+			var exists =await SQLHelper(query)
+			if(exists.length <= 0){
+				console.log("Invalid option")
+				return res
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+				.send("Invalid option : " + type)
+			}
+
+			query = "SELECT article.article_id,editor.editor_id,headlines FROM article JOIN editor ON article.editor_id = editor.editor_id  JOIN belongs_to ON article.editor_id = belongs_to.editor_id AND belongs_to.article_id = article.article_id WHERE belongs_to.name = '"+ type + "' "
+			var headlinesForCategory = await SQLHelper(query)
+			if (headlinesForCategory.length > 0){
+				console.log("Category :" + type + "Headlines \n" + JSON.stringify(headlinesForCategory))
+				return res
+				.status(constants.STATUS_CODE.SUCCESS_STATUS)
+				.send(headlinesForCategory)
+			}
+		}
+		
+	} catch (error) {
+		console.log(`Error while retrieving headlines ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message)
+	}
+
+}
+
+
+/**
+ * Update a article written by the editor in database.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getArticle = async (req, res) => {
+
+	var query
+	var articleData =   req.body
+	var resultArticle ={}
+	try {
+		// articleData = {
+		//	article_id : "",
+		//  user_id : "",
+		//	editor_id: ""
+		// }
+		articleData.article_id = req.params.articleId
+		query ="SELECT name FROM user WHERE user_id ='" + articleData.user_id + "'"
+		var user = await SQLHelper(query)
+		if (user.length <= 0) {
+			console.log("User does not exist")
+			return res
+				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
+				.send(constants.MESSAGES.USER_NOT_FOUND)
+		}else{
+			console.log(JSON.stringify(user))
+		}
+		
+		query = "SELECT name,headlines,body,create_time,modified_time FROM article NATURAL JOIN editor WHERE article_id ='"+articleData.article_id+"' AND editor_id ='" + articleData.editor_id +"'"
+		var article = await SQLHelper(query)
+		if (article.length <= 0) {
+			console.log("Article does not exist")
+			return res
+				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
+				.send(constants.MESSAGES.USER_NOT_FOUND)
+		}else{
+			resultArticle.name = article[0].name
+			resultArticle.headlines = article[0].headlines
+			resultArticle.body = article[0].body
+			if(article[0].modified_time != null){
+				resultArticle.lastModified = article[0].modified_time
+			}else{
+				resultArticle.lastModified = article[0].create_time
+			}
+			
+		}
+		
+		query = "SELECT name FROM belongs_to WHERE article_id ='"+articleData.article_id+"' AND editor_id ='" + articleData.editor_id +"'"
+		var categories = await SQLHelper(query)
+		if (categories.length <= 0) {
+			console.log("Invalid Result. Shoud not happen")
+			return res
+				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
+				.send(constants.MESSAGES.INVALID_RESULT)
+		}else{
+			resultArticle.categories = categories
+			console.log(JSON.stringify(categories))
+		}
+		
+		
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(resultArticle)
+	} catch (error) {
+		console.log(`Error while  retrieving article ${error}`)
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)

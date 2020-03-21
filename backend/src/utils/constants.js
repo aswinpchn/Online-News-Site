@@ -17,6 +17,7 @@ module.exports = {
 	},
 	MESSAGES: {
 		USER_NOT_FOUND: 'User not found',
+		ARTICLE_NOT_FOUND: 'ARTICLE not found',
 		EDITOR_DOES_NOT_EXIST: 'Editor does not exist',
 		USER_ALREADY_EXISTS: 'An account with this email id already exists',
 		USER_DETAILS_ALREADY_EXISTS: 'Username, email id or phone number already exists',
@@ -26,6 +27,7 @@ module.exports = {
 		USER_CANNOT_BE_A_MEMBER_IN_LIST: 'User cannot be a member in his own list',
 		USER_VALUES_MISSING: 'Email must be provided',
 		USER_CANNOT_SUSBSCRIBE_OWN_LIST: 'User cannot subscribe to his own list',
-		ALREADY_SUBSCRIBED: 'User is already subscribed to this list'
+		ALREADY_SUBSCRIBED: 'User is already subscribed to this list',
+		INVALID_RESULT: 'Invalid Result'
 	}
 }
