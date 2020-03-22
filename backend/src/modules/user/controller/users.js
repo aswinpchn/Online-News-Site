@@ -231,3 +231,40 @@ exports.getNotifications = async (req, res) => {
 			.send(error.message)
 	}
 }
+
+exports.likeArticle = async (req, res) => {
+	let likeData =  req.body;
+	console.log(likeData);
+	try {
+		let editorId = await SQLHelper("SELECT editor_id" +
+			" FROM article" +
+			" WHERE article_id =" + likeData.article_id);
+
+		// console.log(JSON.parse(JSON.stringify(editorId))[0].editor_id);
+
+		likeData.editorId = JSON.parse(JSON.stringify(editorId))[0].editor_id;
+
+		let query = `INSERT INTO` +
+			` likes (user_id, article_id, editor_id, l_time)` +
+			` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editorId} , NOW() );`;
+
+		let result = await SQLHelper(query);
+
+		// console.log(result);
+
+		return res
+			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
+			.send(likeData);
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`);
+
+		if(error.code != null && error.code == 'ER_DUP_ENTRY')
+			return res
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+				.send("You have already like this article before");
+
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}

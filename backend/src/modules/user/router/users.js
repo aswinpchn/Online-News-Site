@@ -12,5 +12,6 @@ router.post('/login', userController.loginUser)
 router.get('/profile/:userId', userController.getUserProfile)
 router.post('/update', userController.updateUserProfile)
 router.post('/notifications/:userId', userController.updateUserProfile)
+router.post('/like', userController.likeArticle);
 
 module.exports = router
