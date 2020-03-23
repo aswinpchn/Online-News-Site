@@ -13,5 +13,6 @@ router.get('/profile/:userId', userController.getUserProfile)
 router.post('/update', userController.updateUserProfile)
 router.post('/notifications/:userId', userController.updateUserProfile)
 router.post('/like', userController.likeArticle);
+router.post('/comment', userController.commentOnArticle);
 
 module.exports = router

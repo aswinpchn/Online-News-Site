@@ -268,3 +268,35 @@ exports.likeArticle = async (req, res) => {
 			.send(error.message);
 	}
 }
+
+exports.commentOnArticle = async (req, res) => {
+	let commentData =  req.body;
+	console.log(commentData);
+	try {
+		let editorId = await SQLHelper("SELECT editor_id" +
+			" FROM article" +
+			" WHERE article_id =" + commentData.article_id);
+
+		// console.log(JSON.parse(JSON.stringify(editorId))[0].editor_id);
+
+		commentData.editorId = JSON.parse(JSON.stringify(editorId))[0].editor_id;
+
+		let query = `INSERT INTO` +
+			` comments (user_id, article_id, editor_id, text, c_time)` +
+			` VALUES ( ${commentData.user_id} , ${commentData.article_id} , ${commentData.editorId} , '${commentData.text}' , NOW() );`;
+
+		let result = await SQLHelper(query);
+
+		// console.log(result);
+
+		return res
+			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
+			.send(commentData);
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`);
+
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
