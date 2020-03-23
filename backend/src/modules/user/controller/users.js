@@ -300,3 +300,40 @@ exports.commentOnArticle = async (req, res) => {
 			.send(error.message);
 	}
 }
+
+exports.subscribeToACategory = async (req, res) => {
+	let subscribeData =  req.body;
+	console.log(subscribeData);
+	try {
+
+		let query = `INSERT INTO` +
+			` subscribed_to (user_id, name, s_time)` +
+			` VALUES ( ${subscribeData.user_id} , '${subscribeData.category_name}' , NOW() );`;
+
+		let result = await SQLHelper(query);
+
+		 console.log(result);
+
+		return res
+			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
+			.send(subscribeData);
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`);
+
+		console.log(error);
+
+		if(error.code = 'ER_NO_REFERENCED_ROW_2')
+			return res
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+				.send("There is no category with this category_name");
+		
+		if(error.code == 'ER_DUP_ENTRY')
+			return res
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+				.send("This user has already subscribed this category");
+
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
