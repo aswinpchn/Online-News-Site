@@ -236,17 +236,10 @@ exports.likeArticle = async (req, res) => {
 	let likeData =  req.body;
 	console.log(likeData);
 	try {
-		let editorId = await SQLHelper("SELECT editor_id" +
-			" FROM article" +
-			" WHERE article_id =" + likeData.article_id);
-
-		// console.log(JSON.parse(JSON.stringify(editorId))[0].editor_id);
-
-		likeData.editorId = JSON.parse(JSON.stringify(editorId))[0].editor_id;
 
 		let query = `INSERT INTO` +
 			` likes (user_id, article_id, editor_id, l_time)` +
-			` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editorId} , NOW() );`;
+			` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editor_id} , NOW() );`;
 
 		let result = await SQLHelper(query);
 
@@ -273,17 +266,10 @@ exports.commentOnArticle = async (req, res) => {
 	let commentData =  req.body;
 	console.log(commentData);
 	try {
-		let editorId = await SQLHelper("SELECT editor_id" +
-			" FROM article" +
-			" WHERE article_id =" + commentData.article_id);
-
-		// console.log(JSON.parse(JSON.stringify(editorId))[0].editor_id);
-
-		commentData.editorId = JSON.parse(JSON.stringify(editorId))[0].editor_id;
 
 		let query = `INSERT INTO` +
 			` comments (user_id, article_id, editor_id, text, c_time)` +
-			` VALUES ( ${commentData.user_id} , ${commentData.article_id} , ${commentData.editorId} , '${commentData.text}' , NOW() );`;
+			` VALUES ( ${commentData.user_id} , ${commentData.article_id} , ${commentData.editor_id} , '${commentData.text}' , NOW() );`;
 
 		let result = await SQLHelper(query);
 
