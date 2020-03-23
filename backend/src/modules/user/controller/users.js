@@ -323,3 +323,89 @@ exports.subscribeToACategory = async (req, res) => {
 			.send(error.message);
 	}
 }
+
+/*
+* This api deals with views, likes, comments and subscribed tables.
+* For a given user, his views, liked, comments and subscribed history is retrieved.
+* The result is sent back as array in chronological order.
+*/
+exports.getUserActivity = async (req, res) => {
+	try {
+		let userId = req.params.userId;
+		console.log(userId);
+
+		let activity = [];
+
+		let viewedQuery = `SELECT A.article_id, A.editor_id, A.headlines content,  r_time time, 'viewed' as type` +
+			` FROM views V, article A` +
+			` WHERE V.user_id = ${userId} and V.user_id = A.article_id and V.editor_id = A.editor_id;`;
+
+		let viewedResult = await SQLHelper(viewedQuery);
+
+		for(let i = 0; i < JSON.parse(JSON.stringify(viewedResult)).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(viewedResult))[i]);
+		}
+
+		//console.log(activity);
+
+
+		let likedQuery = `SELECT A.article_id, A.editor_id, A.headlines content, l_time time, 'liked' as type ` +
+			` FROM likes L, article A` +
+			` WHERE L.user_id = ${userId} and L.user_id = A.article_id and L.editor_id = A.editor_id;`;
+
+		let likedResult = await SQLHelper(likedQuery);
+
+		for(let i = 0; i < JSON.parse(JSON.stringify(likedResult)).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(likedResult))[i]);
+		}
+
+		//console.log(activity);
+
+
+
+		let commentedQuery = `SELECT A.article_id, A.editor_id, A.headlines content, c_time time, 'commented' as type` +
+			` FROM comments C, article A` +
+			` WHERE C.user_id = ${userId} and C.user_id = A.article_id and C.editor_id = A.editor_id;`;
+
+		let commentedResult = await SQLHelper(commentedQuery);
+
+		for(let i = 0; i < JSON.parse(JSON.stringify(commentedResult)).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(commentedResult))[i]);
+		}
+
+		//console.log(activity);
+
+
+		let subscribedQuery = `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
+			` FROM subscribed_to S, category C` +
+			` WHERE S.user_id = ${userId} and S.name = C.name;`;
+
+		let subscribedResult = await SQLHelper(subscribedQuery);
+
+		for(let i = 0; i < JSON.parse(JSON.stringify(subscribedResult)).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(subscribedResult))[i]);
+		}
+
+		//console.log(activity);
+
+		activity.sort( (a, b) => {
+			// console.log(a.time + " --------- " + b.time);
+			// console.log(Date.parse(a.time) + " --------- " + Date.parse(b.time));
+			// console.log(Date.parse(a.time) - Date.parse(b.time));
+			// a.time and b.time can't be compare directly, we have to use Date.parse to first them seperately and then sort them.
+			return Date.parse(a.time) - Date.parse(b.time);
+		});
+
+		// console.log(activity); After sorting.
+
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(activity);
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`);
+
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
