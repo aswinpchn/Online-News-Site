@@ -8,5 +8,7 @@ import validation from 'express-validation'
 
 router.post('/signup', editorController.createEditor)
 router.get('/profile/:editorId', editorController.getEditorProfile)
+router.post('/read/time/', editorController.getArticleReadsByTimeOfTheDay);
+router.post('/read/age/', editorController.getArticleReadsByAge);
 
 module.exports = router

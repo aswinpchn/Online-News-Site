@@ -131,3 +131,70 @@ exports.updateEditorProfile = async (req, res) => {
 			.send(error.message)
 	}
 }
+
+exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
+	console.log(req.body);
+
+	try {
+
+		let condition;
+
+		if(req.body.time_of_the_day == "10PM-6AM")
+			condition = 'HOUR(r_time) >= 22 OR HOUR(r_time) < 6';
+		else if(req.body.time_of_the_day == "6AM-2PM")
+			condition = 'HOUR(r_time) >= 6 AND HOUR(r_time) < 14';
+		else
+			condition = 'HOUR(r_time) >= 14 AND HOUR(r_time) < 22';
+
+		let query = `Select COUNT(*) count` +
+			` FROM views` +
+			` WHERE editor_id = ${req.body.editor_id} AND ${condition};`;
+
+		let result = await SQLHelper(query);
+		//console.log(result);
+
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(result[0]);
+
+	} catch(error) {
+		console.log(`Error while getting user profile details ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
+
+exports.getArticleReadsByAge = async (req, res) => {
+	console.log(req.body);
+
+	try {
+		let condition;
+
+		if(req.body.age_bracket == "0-18")
+			condition = '(YEAR(NOW()) - YEAR(U.DOB)) < 18';
+		else if(req.body.age_bracket == "18-40")
+			condition = '(YEAR(NOW()) - YEAR(U.DOB)) >= 18 AND (YEAR(NOW()) - YEAR(U.DOB)) < 40';
+		else if(req.body.age_bracket == "40-60")
+			condition = '(YEAR(NOW()) - YEAR(U.DOB)) >= 40 AND (YEAR(NOW()) - YEAR(U.DOB)) < 60';
+		else
+			condition = '(YEAR(NOW()) - YEAR(U.DOB)) >= 60';
+
+		let query = `Select COUNT(*) count` +
+			` FROM views V, user U` +
+			` WHERE V.user_id = U.user_id AND V.editor_id = ${req.body.editor_id} AND ${condition};`;
+
+		let result = await SQLHelper(query);
+		//console.log(result);
+
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(result[0]);
+	} catch (error) {
+		console.log(`Error while getting user profile details ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
+
