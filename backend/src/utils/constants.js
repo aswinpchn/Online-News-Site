@@ -28,6 +28,8 @@ module.exports = {
 		USER_VALUES_MISSING: 'Email must be provided',
 		USER_CANNOT_SUSBSCRIBE_OWN_LIST: 'User cannot subscribe to his own list',
 		ALREADY_SUBSCRIBED: 'User is already subscribed to this list',
-		INVALID_RESULT: 'Invalid Result'
+		INVALID_RESULT: 'Invalid Result',
+		NO_ARTICLE_PRESENT : 'No article present',
+		NO_CATEGORY_PRESENT: 'No category has been read'
 	}
 }
