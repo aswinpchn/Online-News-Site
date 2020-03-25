@@ -26,6 +26,7 @@ exports.createUser = async (req, res) => {
 	let createdUser
 	var query
 	var userData = req.body
+	console.log(req.body)
 	try {
 		// userData = {
 		// 	email : "jayasurya.pinaki@sjsu.edu",
@@ -35,13 +36,15 @@ exports.createUser = async (req, res) => {
 		// 	DOB : "1996-08-17",
 		// 	location : "CA"
 		// }
-		
 		if (!isUniqueEmail(userData.email)) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
+		console.log(userData.password)
+		console.log(EncryptPassword(userData.password))
+		userData.password = EncryptPassword(userData.password)
 		query = "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" + userData.name + "', '" + userData.DOB + "', '" + userData.location + "', '" + userData.sex + "', '" + userData.email + "', '" + userData.password + "')"
 		await SQLHelper(query)
 		return res
@@ -207,19 +210,46 @@ exports.updateUserProfile = async (req, res) => {
 exports.getNotifications = async (req, res) => {
 	var query
 	try {
-		query = "\
-			SELECT name, article_id, editor_id, headlines, c_time " +
+
+		query = "( " + 
+			"SELECT NULL as name, A.editor_id as editor_id, A.article_id as article_id, A.headlines as headlines, A.create_time as time, 'NEW' as status " + 
+			"FROM article A JOIN ( " + 
+				"SELECT editor_id, article_id, name, s_time " + 
+				"FROM belongs_to NATURAL JOIN ( " +
+					"SELECT name, s_time " + 
+					"FROM subscribed_to " + 
+					"WHERE user_id = " + req.params.userId + 
+				") innerTable " + 
+			") B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.create_time > B.s_time " + 
+		") " + 
+		"UNION" +
+		" ( " + 
+			"SELECT NULL as name, A.editor_id as editor_id, A.article_id as article_id, A.headlines as headlines, A.modified_time as time, 'MODIFIED' as status " +
+			"FROM article A JOIN ( " +
+				"SELECT editor_id, article_id, name, s_time " +
+				"FROM belongs_to NATURAL JOIN ( " +
+					"SELECT name, s_time " +
+					"FROM subscribed_to " +
+					"WHERE user_id =" + req.params.userId +
+				") innerTable " +
+			") B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.modified_time > B.s_time " +
+		") " +
+		"UNION" +
+		" ( " +
+			"SELECT name, editor_id, article_id, headlines, c_time as time, 'COMMENTS' as status " +
 			"FROM comments NATURAL JOIN ( " +
 				"SELECT min(c_time) AS mintime, editor_id, article_id " +
-				"FROM comments " + 
-				"WHERE user_id =" + req.params.userId +
+				"FROM comments " +
+				"WHERE user_id = " + req.params.userId + " " + 
 				"GROUP BY editor_id, article_id " +
-			") A NATURAL JOIN article NATURAL JOIN user" +
-			"WHERE user_id != " + req.params.userId + " AND mintime <= c_time;";
+			") A NATURAL JOIN article NATURAL JOIN user " +
+			"WHERE user_id != " + req.params.userId + " AND mintime <= c_time " +
+		") " +
+		"ORDER BY time desc";
+		
 		let details = await SQLHelper(query)
 
 		if (details.length > 0) {
-			details = details[0]
 			return res.status(200).send(details)
 		} else {
 			return res.status(204).json()

@@ -11,7 +11,7 @@ router.post('/signup', userController.createUser)
 router.post('/login', userController.loginUser)
 router.get('/profile/:userId', userController.getUserProfile)
 router.post('/update', userController.updateUserProfile)
-router.post('/notifications/:userId', userController.updateUserProfile)
+router.get('/notifications/:userId', userController.getNotifications)
 router.post('/like', userController.likeArticle);
 router.post('/comment', userController.commentOnArticle);
 router.post('/subscribe', userController.subscribeToACategory);

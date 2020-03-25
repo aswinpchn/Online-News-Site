@@ -23,6 +23,7 @@ logger.info('Starting the News Paper application!');
 let usersRouter = require('../src/modules/user/router/users')
 let editorsRouter = require('../src/modules/editor/router/editors')
 let articlesRouter = require('../src/modules/article/router/article')
+let analyticsRouter = require('../src/modules/analytics/router/analytics')
 
 // database connections
 require('../src/models/mongoDB/index')
@@ -46,6 +47,7 @@ app.use(cors({ origin: '*', credentials: false }));
 app.use('/users', usersRouter)
 app.use('/editors', editorsRouter)
 app.use('/article', articlesRouter)
+app.use('/analytics', analyticsRouter)
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
