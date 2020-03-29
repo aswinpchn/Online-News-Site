@@ -6,7 +6,7 @@ var isUniqueEmail = async (email) => {
     var query
     query = "SELECT user_id from user where email = '" + email + "'"
     var result = await SQLHelper(query)
-    if(result.length > 0) {
+    if(result) {
         return false
     }
     

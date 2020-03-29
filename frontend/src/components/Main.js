@@ -3,6 +3,7 @@ import {Route} from 'react-router-dom';
 import Root from './root/root';
 import Landing from './landing/landing';
 import Login from './root/login';
+import Logout from './root/logout';
 import CreateAccount from './root/createAccount';
 
 //Create a Main Component
@@ -13,6 +14,7 @@ class Main extends Component {
                 {/*Render Different Component based on Route*/}
                 <Route path="/" component={ Root }/>
                 <Route path="/login" component={ Login }/>
+                <Route path="/logout" component={ Logout }/>
                 <Route path="/create-account" component={ CreateAccount }/>
 
                 <Route path="/all" component={ Landing }/>

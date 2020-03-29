@@ -23,9 +23,6 @@ exports.createEditor = async (req, res) => {
 		// 	email : "jayasurya.pinaki@sjsu.edu",
 		// 	password : EncryptPassword("password123"),
 		// 	name : "Jayasurya",
-		// 	sex : "M",
-		// 	DOB : "1996-08-17",
-		// 	location : "CA"
 		// }
 		
 		if (!isUniqueEmail(userData.email)) {
@@ -34,6 +31,7 @@ exports.createEditor = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
+		userData.password = EncryptPassword(userData.password)
 		query = "INSERT INTO editor (name, email, password) VALUES ('" + userData.name + "', '" + userData.email + "', '" + userData.password + "')"
 		await SQLHelper(query)
 		return res

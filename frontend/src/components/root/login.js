@@ -2,6 +2,9 @@ import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import Header from '../common/header';
 import Footer from '../common/footer';
+import Constants from '../../utils/constants';
+import axios from 'axios';
+import { Redirect } from 'react-router';
 
 class Home extends Component {
 
@@ -28,14 +31,37 @@ class Home extends Component {
     }
 
     submitLogin = (e) => {
-
+        var usrData = {
+            email: this.state.loginId,
+            password: this.state.password,
+        }
+        axios.post(Constants.BACKEND_SERVER.URL + "/users/login", usrData)
+        .then((response) => {
+            localStorage.setItem('226User', response.data.name);
+            localStorage.setItem('226UserId', response.data.user_id);
+            localStorage.setItem('226UserType', response.data.type);
+            this.setState({
+                loginId: '',
+                password: '',
+            })
+        })
+        .catch(() => {
+            this.setState({
+                errMsg: 'Failed to login',
+                successMsg: '',
+            });
+        })
     }
 
     render() {
+        let RedirectVar;
+        if (localStorage.getItem('226User')) {
+            RedirectVar = <Redirect to="/all" />
+        }
 
         return (
             <div>
-
+                { RedirectVar }
                 {/* <!-- Card with information --> */}
                 <div class="bg-white pl-5 pr-5 pb-5">
                     <Header />

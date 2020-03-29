@@ -1,13 +1,18 @@
 import React, {Component} from 'react';
+import Constants from '../../utils/constants';
 
 class Home extends Component {
 
     render(){
-        
+        let logoutUser
+        if (localStorage.getItem('226User')) {
+            logoutUser = <p>Not { localStorage.getItem('226User') }? <a href="/logout">Logout</a></p>
+        }
         return(               
             <div class="row mt-5 border-top">
                 <div class="col-8">
                     <h1><a href="https://github.com/aswinpchn/NewsPaper" target="_blank" rel="noopener noreferrer" class="text-dark">226 Project 2</a></h1>
+                    { logoutUser }
                 </div>
                 <div class="col-4">
                     <div class="row">

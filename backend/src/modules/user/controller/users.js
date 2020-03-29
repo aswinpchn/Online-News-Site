@@ -42,8 +42,6 @@ exports.createUser = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
-		console.log(userData.password)
-		console.log(EncryptPassword(userData.password))
 		userData.password = EncryptPassword(userData.password)
 		query = "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" + userData.name + "', '" + userData.DOB + "', '" + userData.location + "', '" + userData.sex + "', '" + userData.email + "', '" + userData.password + "')"
 		await SQLHelper(query)
@@ -74,7 +72,7 @@ exports.loginUser = async (req, res) => {
 		// 	password : "password123"
 		// }
 
-		query = "SELECT user_id, password from user where email = '" + loginData.email + "'"
+		query = "SELECT user_id, name, password from user where email = '" + loginData.email + "'"
 		user = await SQLHelper(query)
 
 		if (user.length > 0) {
@@ -88,7 +86,7 @@ exports.loginUser = async (req, res) => {
 			}
 		}
 
-		query = "SELECT editor_id, password from editor where email = '" + loginData.email + "'"
+		query = "SELECT editor_id, name, password from editor where email = '" + loginData.email + "'"
 		user = await SQLHelper(query)
 
 		if (user.length > 0) {
