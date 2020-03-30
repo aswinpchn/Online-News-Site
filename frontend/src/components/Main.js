@@ -5,6 +5,7 @@ import Frontpage from './frontpage/frontpage';
 import Login from './root/login';
 import Logout from './root/logout';
 import CreateAccount from './root/createAccount';
+import Article from './articlePage/articlePage';
 
 //Create a Main Component
 class Main extends Component {
@@ -23,6 +24,9 @@ class Main extends Component {
                 <Route path="/business" component={ Frontpage }/>
                 <Route path="/food" component={ Frontpage }/>
                 <Route path="/sports" component={ Frontpage }/>
+                
+                
+                <Route path="/article" component={ Article }/>
             </div>
         )
     }

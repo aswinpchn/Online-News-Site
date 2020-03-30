@@ -15,24 +15,26 @@ class HeadlineCard extends Component {
         }
         console.log(this.props.articleInfo['catgories'].length)
         return(
-            <div class="p-4 shadow">
-                <p class="display-4">{ headline }</p>
-                <div>
-                    <span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>
-                    { categories }
+            <a href="/article/31" class="text-dark text-decoration-none">
+                <div class="p-4 shadow">
+                    <p class="display-4">{ headline }</p>
+                    <div>
+                        <span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>
+                        { categories }
+                    </div>
+                    <div class="row font-weight-lighter">
+                        <div class="col-md-2">
+                            { this.props.articleInfo['likeCount'] } Likes
+                        </div>
+                        <div class="col-md-2">
+                            { this.props.articleInfo['commentCount'] } Comments                        
+                        </div>
+                        <div class="col-md-2">
+                            { this.props.articleInfo['viewCount'] } Views                     
+                        </div>
+                    </div>
                 </div>
-                <div class="row font-weight-lighter">
-                    <div class="col-md-2">
-                        { this.props.articleInfo['likeCount'] } Likes
-                    </div>
-                    <div class="col-md-2">
-                        { this.props.articleInfo['commentCount'] } Comments                        
-                    </div>
-                    <div class="col-md-2">
-                        { this.props.articleInfo['viewCount'] } Views                     
-                    </div>
-                </div>
-            </div>
+            </a>
         )
     }
 }
