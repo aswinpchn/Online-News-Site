@@ -1,5 +1,4 @@
 import React, {Component} from 'react';
-import Constants from '../../utils/constants';
 
 class Home extends Component {
 

@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import {Route} from 'react-router-dom';
 import Root from './root/root';
-import Landing from './landing/landing';
+import Frontpage from './frontpage/frontpage';
 import Login from './root/login';
 import Logout from './root/logout';
 import CreateAccount from './root/createAccount';
@@ -17,12 +17,12 @@ class Main extends Component {
                 <Route path="/logout" component={ Logout }/>
                 <Route path="/create-account" component={ CreateAccount }/>
 
-                <Route path="/all" component={ Landing }/>
-                <Route path="/politics" component={ Landing }/>
-                <Route path="/science" component={ Landing }/>
-                <Route path="/business" component={ Landing }/>
-                <Route path="/food" component={ Landing }/>
-                <Route path="/sports" component={ Landing }/>
+                <Route path="/all" component={ Frontpage }/>
+                <Route path="/politics" component={ Frontpage }/>
+                <Route path="/science" component={ Frontpage }/>
+                <Route path="/business" component={ Frontpage }/>
+                <Route path="/food" component={ Frontpage }/>
+                <Route path="/sports" component={ Frontpage }/>
             </div>
         )
     }
