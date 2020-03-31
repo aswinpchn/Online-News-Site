@@ -5,7 +5,6 @@ class Header extends Component {
     render(){
 
         var display;
-        var updateLink = "";
         if (window.location.pathname === '/login' || window.location.pathname === '/create-account') {
             display = "";
         } else if (localStorage.getItem('226UserType') === "User") {

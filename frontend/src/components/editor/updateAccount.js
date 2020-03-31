@@ -13,10 +13,22 @@ class Home extends Component {
         this.state = {
             name: '',
             email: '',
-            password: '',
+            password: null,
             errMsg: '',
             successMsg: '',
         };
+    }
+
+    componentDidMount() {
+        axios.get(Constants.BACKEND_SERVER.URL + `/editors/profile/${localStorage.getItem('226UserId')}`)
+        .then((response) => {
+            console.log(response.data)
+            this.setState({
+                name: response.data.name,
+                email: response.data.email,
+                sex: response.data.sex
+            })
+        })
     }
 
     IsValueEmpty = (Value) => {
@@ -82,40 +94,24 @@ class Home extends Component {
             })
             return;
         }
-        if (this.IsValueEmpty(this.state.password)) {
-            this.setState({
-                errMsg: "Password cannot be empty"
-            })
-            return;
-        }
         const usrData = {
+            editorId: localStorage.getItem('226UserId'),
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
         }
-        return;
-        axios.post(Constants.BACKEND_SERVER.URL + "/users/signup", usrData)
+        axios.put(Constants.BACKEND_SERVER.URL + "/editors/update", usrData)
             .then((response) => {
-                this.setState({
-                    name: '',
-                    email: '',
-                    password: ''
-                });
-                if (response.status === 201) {
+                if (response.status === 200) {
                     this.setState({
-                        successMsg: 'User created successfully',
+                        successMsg: 'Editor information updated successfully',
                         errMsg: '',
-                    });
-                } else if (response.status === 409) {
-                    this.setState({
-                        successMsg: '',
-                        errMsg: 'Account with this email already exists',
                     });
                 }
             })
             .catch(() => {
                 this.setState({
-                    errMsg: 'Failed to create account',
+                    errMsg: 'Account with this email already exists',
                     successMsg: '',
                 });
             });

@@ -86,7 +86,7 @@ exports.loginUser = async (req, res) => {
 			}
 		}
 
-		query = "SELECT editor_id, name, password from editor where email = '" + loginData.email + "'"
+		query = "SELECT editor_id as user_id, name, password from editor where email = '" + loginData.email + "'"
 		user = await SQLHelper(query)
 
 		if (user.length > 0) {
@@ -185,7 +185,7 @@ exports.updateUserProfile = async (req, res) => {
 		// updating with or without password
 		if(req.body.password) {
 			userObj.password = EncryptPassword(req.body.password)
-			query = `UPDATE user SET email = "${userObj.email}", password = "${userObj.password}, name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${ userObj.userId }`
+			query = `UPDATE user SET email = "${userObj.email}", password = "${userObj.password}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${ userObj.userId }`
 		} else {	
 			query = `UPDATE user SET email = "${userObj.email}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${ userObj.userId }`
 		}

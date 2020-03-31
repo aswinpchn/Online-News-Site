@@ -70,20 +70,18 @@ exports.getEditorProfile = async (req, res) => {
 	}
 }
 
-
 /**
- * Update editor details based on editorid.
+ * Update user details based on userid.
  * @param  {Object} req request object
  * @param  {Object} res response object
  */
 exports.updateEditorProfile = async (req, res) => {
-	var query
 	try {
 		
 		// req = {
 		// 	body :{
-		// 		userId : 1,
-		// 		email : "jayasurya.editor@sjsu.edu",
+		// 		editorId : 5,
+		// 		email : "jayasurya.pinaki@sjsu.edu",
 		// 		password : EncryptPassword("password123"),
 		// 		name : "Jayasurya"
 		// 	}
@@ -94,7 +92,7 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
 		}
 		
-		query = "SELECT user_id FROM user WHERE email = '" + req.body.email + "'"
+		var query = "SELECT user_id from user where email = '" + req.body.email + "'"
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -102,7 +100,7 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 		
-		query = "SELECT editor_id FROM editor WHERE email = '" + email + "' AND editor_id != '" + req.body.userId + "'"
+		query = "SELECT editor_id from editor where email = '" + req.body.email + "' and editor_id != '" + req.body.editorId + "'"
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -110,20 +108,20 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
-		let userObj = req.body
+		query = ""
+		let editorObj = req.body
 
 		// updating with or without password
 		if(req.body.password) {
-			userObj.password = EncryptPassword(req.body.password)
-			query = "UPDATE user (email, password, name) VALUES ('" + userObj.email + "', '" + userObj.password + "', '" + userObj.name + "' WHERE editor_id = '" + userObj.userId + "'"
+			editorObj.password = EncryptPassword(req.body.password)
+			query = `UPDATE editor SET email = "${editorObj.email}", password = "${editorObj.password}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
 		} else {	
-			query = "UPDATE user (email, name) VALUES ('" + userObj.email + "', '" + userObj.name + "' WHERE editor_id = '" + userObj.userId + "'"
+			query = `UPDATE editor SET email = "${editorObj.email}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
 		}
 
 		await SQLHelper(query)
 		return res.status(200).json()
 	} catch (error) {
-		console.log(`Error while getting user profile details ${error}`)
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
