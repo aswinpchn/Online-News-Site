@@ -10,7 +10,7 @@ router.get('/dummy', userController.dummy)
 router.post('/signup', userController.createUser)
 router.post('/login', userController.loginUser)
 router.get('/profile/:userId', userController.getUserProfile)
-router.post('/update', userController.updateUserProfile)
+router.put('/update', userController.updateUserProfile)
 router.get('/notifications/:userId', userController.getNotifications)
 router.post('/like', userController.likeArticle);
 router.post('/comment', userController.commentOnArticle);

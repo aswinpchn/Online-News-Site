@@ -14,7 +14,7 @@ class Home extends Component {
         this.state = {
             name: '',
             email: '',
-            password: '',
+            password: null,
             sex: 'M',
             location: 'AL',
             errMsg: '',
@@ -98,6 +98,19 @@ class Home extends Component {
             "WI": "Wisconsin",
             "WY": "Wyoming"
         }
+    }
+
+    componentDidMount() {
+        axios.get(Constants.BACKEND_SERVER.URL + `/users/profile/${localStorage.getItem('226UserId')}`)
+        .then((response) => {
+            console.log(response.data)
+            this.setState({
+                name: response.data.name,
+                email: response.data.email,
+                sex: response.data.sex,
+                location: response.data.location
+            })
+        })
     }
 
     IsValueEmpty = (Value) => {
@@ -207,6 +220,7 @@ class Home extends Component {
             return;
         }
         const usrData = {
+            userId: localStorage.getItem('226UserId'),
             name: this.state.name,
             email: this.state.email,
             password: this.state.password,
@@ -214,21 +228,12 @@ class Home extends Component {
         usrData.DOB = this.state.year + "-" + this.state.month + "-" + this.state.date;
         usrData.sex = this.state.sex;
         usrData.location = this.state.location;
-        return;
-        axios.post(Constants.BACKEND_SERVER.URL + "/users/signup", usrData)
+        // return;
+        axios.put(Constants.BACKEND_SERVER.URL + "/users/update", usrData)
             .then((response) => {
-                this.setState({
-                    name: '',
-                    email: '',
-                    password: '',
-                    location: '',
-                    month: 1,
-                    date: 1,
-                    year: 2019,
-                });
-                if (response.status === 201) {
+                if (response.status === 200) {
                     this.setState({
-                        successMsg: 'User created successfully',
+                        successMsg: 'Information updated successfully',
                         errMsg: '',
                     });
                 } else if (response.status === 409) {
@@ -240,7 +245,7 @@ class Home extends Component {
             })
             .catch(() => {
                 this.setState({
-                    errMsg: 'Failed to create account',
+                    errMsg: 'Account with this email already exists',
                     successMsg: '',
                 });
             });
@@ -268,7 +273,7 @@ class Home extends Component {
         return (
             <div>
                 <IsReaderCheck />
-                
+
                 {/* <!-- Card with information --> */}
                 <div class="bg-white pl-5 pr-5 pb-5">
                     <Header />

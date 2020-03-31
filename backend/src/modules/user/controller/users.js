@@ -163,7 +163,7 @@ exports.updateUserProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
 		}
 		
-		query = "SELECT user_id from user where email = '" + req.body.email + "' and user_id != '" + req.body.userId + "'"
+		var query = "SELECT user_id from user where email = '" + req.body.email + "' and user_id != '" + req.body.userId + "'"
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -171,7 +171,7 @@ exports.updateUserProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 		
-		query = "SELECT editor_id from editor where email = '" + email + "'"
+		query = "SELECT editor_id from editor where email = '" + req.body.email + "'"
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -185,9 +185,9 @@ exports.updateUserProfile = async (req, res) => {
 		// updating with or without password
 		if(req.body.password) {
 			userObj.password = EncryptPassword(req.body.password)
-			query = "UPDATE user (email, password, name, sex, DOB, location) VALUES ('" + userObj.email + "', '" + userObj.password + "', '" + userObj.name + "', '" + userObj.sex + "', '" + userObj.DOB + "', '" + userObj.location + "' WHERE user_id = '" + userObj.userId + "'"
+			query = `UPDATE user SET email = "${userObj.email}", password = "${userObj.password}, name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${ userObj.userId }`
 		} else {	
-			query = "UPDATE user (email, name, sex, DOB, location) VALUES ('" + userObj.email + "', '" + userObj.name + "', '" + userObj.sex + "', '" + userObj.DOB + "', '" + userObj.location + "' WHERE user_id = '" + userObj.userId + "'"
+			query = `UPDATE user SET email = "${userObj.email}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${ userObj.userId }`
 		}
 
 		await SQLHelper(query)
