@@ -27,9 +27,9 @@ class Main extends Component {
                 <Route path="/editor" component={ EditorFrontpage }/>
                 <Route path="/create-article" component={ CreateArticle }/>
                 <Route path="/analytics" component={ Analytics }/>
-                <Route path="/edit-article/:articleId" component={ EditArticle }/>
+                <Route path="/edit-article/:editorId/:articleId" component={ EditArticle }/>
                 
-                <Route path="/article/:articleId" component={ Article }/>
+                <Route path="/article/:editorId/:articleId" component={ Article }/>
             </div>
         )
     }

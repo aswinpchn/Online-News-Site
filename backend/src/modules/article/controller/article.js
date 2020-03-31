@@ -93,7 +93,6 @@ exports.modifyArticle = async (req, res) => {
 		var result = await SQLHelper(query)
 		
 		if (result.length <= 0) {
-			console.log("editor does not exist")
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.EDITOR_DOES_NOT_EXIST)
@@ -101,13 +100,11 @@ exports.modifyArticle = async (req, res) => {
 		
 		query = "UPDATE article SET body='" +articleData.body + "', modified_time='" + modified_time + "' WHERE article_id ='" + articleData.article_id +"' AND editor_id ='" + articleData.editor_id +"'"
 		var result = await SQLHelper(query)
-		console.log("Result : " + JSON.stringify(result, null, 2))
 		
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send("Updated Article Successfully")
 	} catch (error) {
-		console.log(`Error while saving article ${error}`)
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -171,32 +168,17 @@ exports.getHeadlines = async (req, res) => {
 exports.getArticle = async (req, res) => {
 
 	var query
-	var articleData =   req.body
 	var resultArticle ={}
+	console.log(req.params)
 	try {
-		// articleData = {
-		//	article_id : "",
-		//  user_id : "",
-		//	editor_id: ""
-		// }
-		articleData.article_id = req.params.articleId
-		query ="SELECT name FROM user WHERE user_id ='" + articleData.user_id + "'"
-		var user = await SQLHelper(query)
-		if (user.length <= 0) {
-			console.log("User does not exist")
-			return res
-				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
-				.send(constants.MESSAGES.USER_NOT_FOUND)
-		}else{
-			console.log(JSON.stringify(user))
-		}
 		
-		query = "SELECT name,headlines,body,create_time,modified_time FROM article NATURAL JOIN editor WHERE article_id ='"+articleData.article_id+"' AND editor_id ='" + articleData.editor_id +"'"
+		query = "SELECT name, headlines, body, create_time, modified_time " +
+				"FROM article NATURAL JOIN editor " +
+				"WHERE article_id ='" + req.params.articleId + "' AND editor_id ='" + req.params.editorId +"'"
 		var article = await SQLHelper(query)
 		if (article.length <= 0) {
-			console.log("Article does not exist")
 			return res
-				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_NOT_FOUND)
 		}else{
 			resultArticle.name = article[0].name
@@ -210,16 +192,20 @@ exports.getArticle = async (req, res) => {
 			
 		}
 		
-		query = "SELECT name FROM belongs_to WHERE article_id ='"+articleData.article_id+"' AND editor_id ='" + articleData.editor_id +"'"
+		query = "SELECT name " + 
+				"FROM belongs_to " +
+				"WHERE article_id ='" + req.params.articleId + "' AND editor_id ='" + req.params.editorId +"'"
 		var categories = await SQLHelper(query)
 		if (categories.length <= 0) {
-			console.log("Invalid Result. Shoud not happen")
 			return res
-				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
+				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.INVALID_RESULT)
 		}else{
-			resultArticle.categories = categories
-			console.log(JSON.stringify(categories))
+			var allCategories = []
+			for (var index in categories) {
+				allCategories.push(categories[index].name)
+			}
+			resultArticle.categories = allCategories
 		}
 		
 		

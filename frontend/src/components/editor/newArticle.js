@@ -74,7 +74,7 @@ class Landing extends Component {
                 errMsg: "Headlines and body cannot be empty",
                 successMsg: ""
             })
-        } else if (this.selectedCategory.length == 0) {
+        } else if (this.selectedCategory.length === 0) {
             this.setState({
                 errMsg: "Please select atleast one category this article belongs to",
                 successMsg: ""
