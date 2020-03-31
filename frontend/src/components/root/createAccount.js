@@ -293,7 +293,7 @@ class Home extends Component {
     render() {
         let RedirectVar;
         if (localStorage.getItem('226User')) {
-            RedirectVar = <Redirect to="/all" />
+            RedirectVar = <Redirect to="/frontpage/all" />
         }
         const MonthsOption = [];
         const DateOption = [];

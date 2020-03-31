@@ -6,7 +6,7 @@ class Logout extends Component {
         localStorage.removeItem('226User');
         localStorage.removeItem('226UserId');
         localStorage.removeItem('226UserType');
-		let RedirectVar = <Redirect to="/all" />;
+		let RedirectVar = <Redirect to="/frontpage/all" />;
 		return (
 			<div>
 				{RedirectVar}

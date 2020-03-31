@@ -13,13 +13,16 @@ class HeadlineCard extends Component {
         for (index = 0; index < this.props.articleInfo['catgories'].length; index++) {
             categories.push(<span class="bg-secondary text-white ml-2 p-1 rounded">{ this.props.articleInfo['catgories'][index] }</span>)
         }
-        console.log(this.props.articleInfo['catgories'].length)
+        let authorOrEdit = [<span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>]
+        if (localStorage.getItem('226UserType') === "Editor") {
+            authorOrEdit = [<a href="/edit-article/id" class="text-decoration-none"><span class="bg-primary p-1 mr-2 text-white rounded">Edit this article</span></a>]
+        }
         return(
             <a href="/article/31" class="text-dark text-decoration-none">
                 <div class="p-4 shadow">
                     <p class="display-4">{ headline }</p>
                     <div>
-                        <span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>
+                        { authorOrEdit }
                         { categories }
                     </div>
                     <div class="row font-weight-lighter">

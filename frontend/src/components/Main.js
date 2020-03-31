@@ -1,11 +1,15 @@
 import React, {Component} from 'react';
 import {Route} from 'react-router-dom';
 import Root from './root/root';
-import Frontpage from './frontpage/frontpage';
+import ReaderFrontpage from './frontpage/reader';
+import EditorFrontpage from './frontpage/editor';
 import Login from './root/login';
 import Logout from './root/logout';
 import CreateAccount from './root/createAccount';
 import Article from './articlePage/articlePage';
+import CreateArticle from './editor/newArticle';
+import Analytics from './editor/analytics';
+import EditArticle from './editor/editArticle';
 
 //Create a Main Component
 class Main extends Component {
@@ -18,15 +22,14 @@ class Main extends Component {
                 <Route path="/logout" component={ Logout }/>
                 <Route path="/create-account" component={ CreateAccount }/>
 
-                <Route path="/all" component={ Frontpage }/>
-                <Route path="/politics" component={ Frontpage }/>
-                <Route path="/science" component={ Frontpage }/>
-                <Route path="/business" component={ Frontpage }/>
-                <Route path="/food" component={ Frontpage }/>
-                <Route path="/sports" component={ Frontpage }/>
+                <Route path="/frontpage/:category" component={ ReaderFrontpage }/>
                 
+                <Route path="/editor" component={ EditorFrontpage }/>
+                <Route path="/create-article" component={ CreateArticle }/>
+                <Route path="/analytics" component={ Analytics }/>
+                <Route path="/edit-article/:articleId" component={ EditArticle }/>
                 
-                <Route path="/article" component={ Article }/>
+                <Route path="/article/:articleId" component={ Article }/>
             </div>
         )
     }

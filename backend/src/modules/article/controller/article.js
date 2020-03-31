@@ -234,3 +234,31 @@ exports.getArticle = async (req, res) => {
 	}
 
 }
+
+
+/**
+ * Get list of categories available.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getAllCategories = async (req, res) => {
+
+	try {
+		let query ="SELECT name FROM category";
+		var categories = await SQLHelper(query)
+		if (categories.length <= 0) {
+			return res
+				.status(constants.STATUS_CODE.NOT_FOUND_STATUS)
+				.send(constants.MESSAGES.NO_CATEGORY_PRESENT)
+		}else{
+			return res
+				.status(constants.STATUS_CODE.SUCCESS_STATUS)
+				.send(categories)
+		}
+	} catch (error) {
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message)
+	}
+
+}

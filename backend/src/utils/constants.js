@@ -30,6 +30,6 @@ module.exports = {
 		ALREADY_SUBSCRIBED: 'User is already subscribed to this list',
 		INVALID_RESULT: 'Invalid Result',
 		NO_ARTICLE_PRESENT : 'No article present',
-		NO_CATEGORY_PRESENT: 'No category has been read'
+		NO_CATEGORY_PRESENT: 'No category available'
 	}
 }
