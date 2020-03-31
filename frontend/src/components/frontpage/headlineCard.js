@@ -15,10 +15,10 @@ class HeadlineCard extends Component {
         }
         let authorOrEdit = [<span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>]
         if (localStorage.getItem('226UserType') === "Editor") {
-            authorOrEdit = [<a href="/edit-article/id" class="text-decoration-none"><span class="bg-primary p-1 mr-2 text-white rounded">Edit this article</span></a>]
+            authorOrEdit = [<a href={ "/edit-article/" + this.props.articleInfo['editorId'] +"/" + this.props.articleInfo['articleId'] } class="text-decoration-none"><span class="bg-primary p-1 mr-2 text-white rounded">Edit this article</span></a>]
         }
         return(
-            <a href="/article/31" class="text-dark text-decoration-none">
+            <a href={ "/article/" + this.props.articleInfo['editorId'] +"/" + this.props.articleInfo['articleId'] } class="text-dark text-decoration-none">
                 <div class="p-4 shadow">
                     <p class="display-4">{ headline }</p>
                     <div>

@@ -10,6 +10,8 @@ class Landing extends Component {
     render(){
 
         var article1 = {
+            articleId: 23,
+            editorId: 41,
             headline : "Tokyo Olympics Organizers Considering July 2021 for Opening Ceremony 2021 for Opening Opening Ceremony 2021 for Opening",
             author: "John Doe",
             catgories: ["Sports", "Politics"],
@@ -18,6 +20,8 @@ class Landing extends Component {
             viewCount: 300
         }
         var article2 = {
+            articleId: 9,
+            editorId: 31,
             headline : "April Bills Loom. The Economy Hangs on How Many Are Left Unpaid.",
             author: "Jayda Sloan",
             catgories: ["Sports", "Politics", "Business"],
@@ -26,6 +30,8 @@ class Landing extends Component {
             viewCount: 120
         }
         var article3 = {
+            articleId: 3,
+            editorId: 19,
             headline : "Surging Traffic Is Slowing Down Our Internet",
             author: "Dotty Mclean",
             catgories: ["Food"],
@@ -34,6 +40,8 @@ class Landing extends Component {
             viewCount: 30
         }
         var article4 = {
+            articleId: 19,
+            editorId: 29,
             headline : "For Drive-In Theaters, an Unexpected Revival",
             author: "Clifford Hodgson",
             catgories: ["Science", "Politics"],

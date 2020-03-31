@@ -5,13 +5,25 @@ class Header extends Component {
     render(){
 
         var display;
+        var updateLink = "";
         if (window.location.pathname === '/login' || window.location.pathname === '/create-account') {
             display = "";
-        } else if (localStorage.getItem('226User')) {
+        } else if (localStorage.getItem('226UserType') === "User") {
             display = [       
                 <div class="col-md-2 pt-4">
                     <p class="text-break">Hello, { localStorage.getItem('226User') }</p>
-                    <button class="btn btn-outline-dark">Update my profile</button>
+                    <a href="/update-account/user">
+                        <button class="btn btn-outline-dark">Update my profile</button>
+                    </a>
+                </div>
+            ]
+        }  else if (localStorage.getItem('226UserType') === "Editor") {
+            display = [       
+                <div class="col-md-2 pt-4">
+                    <p class="text-break">Hello, { localStorage.getItem('226User') }</p>
+                    <a href="/update-account/editor">
+                        <button class="btn btn-outline-dark">Update my profile</button>
+                    </a>
                 </div>
             ]
         } else {

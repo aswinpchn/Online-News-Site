@@ -5,7 +5,7 @@ class Root extends Component {
 	render() {
 		let RedirectVar = '';
 		if (this.props.location.pathname === '/') {
-			RedirectVar = <Redirect to="/all" />;
+			RedirectVar = <Redirect to="/frontpage/all" />;
 		}
 		return (
 			<div>

@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Redirect } from 'react-router';
 
-class IsEditor extends Component {
+class IsReader extends Component {
 	render() {
         let RedirectVar
-        if (localStorage.getItem('226UserType') === "User") {
-            RedirectVar = <Redirect to="/frontpage/all" />;
+        if (localStorage.getItem('226UserType') === "Editor") {
+            RedirectVar = <Redirect to="/editor" />;
         } else if (!localStorage.getItem('226UserType')) {
             RedirectVar = <Redirect to="/login" />;
         }
@@ -17,5 +17,5 @@ class IsEditor extends Component {
 		);
 	}
 }
-// export IsEditor Component
-export default IsEditor;
+// export IsReader Component
+export default IsReader;

@@ -10,6 +10,8 @@ import Article from './articlePage/articlePage';
 import CreateArticle from './editor/newArticle';
 import Analytics from './editor/analytics';
 import EditArticle from './editor/editArticle';
+import UpdateUserAccount from './user/updateAccount';
+import UpdateEditorAccount from './editor/updateAccount';
 
 //Create a Main Component
 class Main extends Component {
@@ -21,6 +23,8 @@ class Main extends Component {
                 <Route path="/login" component={ Login }/>
                 <Route path="/logout" component={ Logout }/>
                 <Route path="/create-account" component={ CreateAccount }/>
+                <Route path="/update-account/editor" component={ UpdateEditorAccount }/>
+                <Route path="/update-account/user" component={ UpdateUserAccount }/>
 
                 <Route path="/frontpage/:category" component={ ReaderFrontpage }/>
                 
