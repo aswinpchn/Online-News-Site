@@ -67,6 +67,7 @@ exports.saveArticle = async (req, res) => {
 		let newArticle = new Article({
 			articleId: article_id,
 			editorId: articleData.editor_id,
+			readCount: 0,
 			likeCount: 0,
 			commentCount: 0,
 			comments: []
@@ -224,6 +225,16 @@ exports.getArticle = async (req, res) => {
 			}
 			resultArticle.categories = allCategories
 		}
+
+
+		/*
+		Maintaing readCount seperately, this way, for quickview, we can avoid SQL queries.
+		 */
+		let condition = {
+			articleId: req.params.articleId,
+			editorId: req.params.editorId
+		};
+		await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } });
 		
 		
 		return res
