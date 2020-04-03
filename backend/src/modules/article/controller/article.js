@@ -3,8 +3,8 @@
 
 import constants from '../../../utils/constants'
 import mongoose from 'mongoose'
-import model from '../../../models/sqlDB/index'
 import SQLHelper from '../../../models/sqlDB/helper'
+import Article from '../../../models/mongoDB/article'
 
 
 /**
@@ -51,14 +51,31 @@ exports.saveArticle = async (req, res) => {
 		query = "INSERT INTO article (editor_id, article_id , headlines, body, create_time) VALUES ('" + articleData.editor_id + "','"+ article_id +"','" + articleData.headlines + "', '" + articleData.body + "', '" + create_time + "')"
 		var result = await SQLHelper(query)
 		console.log("Result : " + JSON.stringify(result, null, 2))
-		
 
+		
 		var categories = articleData.categories
 		for(var i =0 ;i < categories.length ; i++){
 			query = "INSERT INTO belongs_to VALUES ('" + articleData.editor_id + "','"+ article_id + "','"+ categories[i] + "')"
 			var result = await SQLHelper(query)
 			console.log("Result : " + JSON.stringify(result, null, 2))	
 		}
+
+
+		/*
+		Creating a new article document in Article collection.
+		 */
+		let newArticle = new Article({
+			articleId: article_id,
+			editorId: articleData.editor_id,
+			likeCount: 0,
+			commentCount: 0,
+			comments: []
+		});
+
+		let createdArticle = await newArticle.save();
+		console.log(createdArticle);
+
+
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
