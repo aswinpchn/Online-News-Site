@@ -1,5 +1,6 @@
 `use strict`
 import mongoose from 'mongoose'
+mongoose.set('useFindAndModify', false);
 
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true, poolSize: 5 })
 .then(() => console.log('MongoDB Connected'))

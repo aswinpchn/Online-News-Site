@@ -8,6 +8,7 @@ import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword, validatePassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'
 import log4js from 'log4js';
+import Article from '../../../models/mongoDB/article'
 
 exports.dummy = async(req, res) => {
 	const logger = log4js.getLogger('log');
@@ -272,6 +273,16 @@ exports.likeArticle = async (req, res) => {
 		let result = await SQLHelper(query);
 
 		// console.log(result);
+
+		/*
+		Maintaing likeCount seperately, this way, for quickview, we can avoid SQL queries.
+		 */
+		let condition = {
+			articleId: likeData.article_id,
+			editorId: likeData.editor_id
+		};
+		await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } });
+
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
