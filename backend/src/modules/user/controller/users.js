@@ -401,7 +401,6 @@ exports.getUserActivity = async (req, res) => {
 		for(let i = 0; i < JSON.parse(JSON.stringify(viewedResult)).length; i++) {
 			activity.push(JSON.parse(JSON.stringify(viewedResult))[i]);
 		}
-
 		//console.log(activity);
 
 
@@ -414,22 +413,27 @@ exports.getUserActivity = async (req, res) => {
 		for(let i = 0; i < JSON.parse(JSON.stringify(likedResult)).length; i++) {
 			activity.push(JSON.parse(JSON.stringify(likedResult))[i]);
 		}
-
 		//console.log(activity);
 
 
-
-		let commentedQuery = `SELECT A.article_id, A.editor_id, A.headlines content, c_time time, 'commented' as type` +
-			` FROM comments C, article A` +
-			` WHERE C.user_id = ${userId} and C.user_id = A.article_id and C.editor_id = A.editor_id;`;
-
-		let commentedResult = await SQLHelper(commentedQuery);
-
-		for(let i = 0; i < JSON.parse(JSON.stringify(commentedResult)).length; i++) {
-			activity.push(JSON.parse(JSON.stringify(commentedResult))[i]);
+		/*
+		Get the whole article collection, go through each articles comment, finding the given user's comments.
+		 */
+		let r = await Article.find({});
+		//console.log(r);
+		for(let i = 0; i < r.length; i++) {
+			for (let j = 0; j < r[i].comments.length; j++) {
+				if (r[i].comments[j].userId == userId) {
+					let data = {};
+					data.article_id = r[i].articleId;
+					data.editor_id = r[i].editorId;
+					data.content = r[i].comments[j].text;
+					data.type = "commented";
+					data.time = r[i].comments[j].commentTime;
+					activity.push(data);
+				}
+			}
 		}
-
-		//console.log(activity);
 
 
 		let subscribedQuery = `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
@@ -441,7 +445,6 @@ exports.getUserActivity = async (req, res) => {
 		for(let i = 0; i < JSON.parse(JSON.stringify(subscribedResult)).length; i++) {
 			activity.push(JSON.parse(JSON.stringify(subscribedResult))[i]);
 		}
-
 		//console.log(activity);
 
 		activity.sort( (a, b) => {
@@ -451,7 +454,6 @@ exports.getUserActivity = async (req, res) => {
 			// a.time and b.time can't be compare directly, we have to use Date.parse to first them seperately and then sort them.
 			return Date.parse(a.time) - Date.parse(b.time);
 		});
-
 		// console.log(activity); After sorting.
 
 		return res
