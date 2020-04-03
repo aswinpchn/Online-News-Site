@@ -26,10 +26,13 @@ const schema = new mongoose.Schema({
       required: true
     },
     commentTime: {
-      type: String,
+      type: Date,
       required: true
     }
-  }]
+  }],
+  commentCount: {
+    type: Number
+  }
 });
 
 export default mongoose.model('Article', schema);

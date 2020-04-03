@@ -281,8 +281,8 @@ exports.likeArticle = async (req, res) => {
 			articleId: likeData.article_id,
 			editorId: likeData.editor_id
 		};
-		await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } });
-
+		let r = await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } }, {new: true});
+		//console.log(r);
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
@@ -311,8 +311,25 @@ exports.commentOnArticle = async (req, res) => {
 			` VALUES ( ${commentData.user_id} , ${commentData.article_id} , ${commentData.editor_id} , '${commentData.text}' , NOW() );`;
 
 		let result = await SQLHelper(query);
-
 		// console.log(result);
+
+
+		/*
+		Appending the comment to the article document, incrementing the commentCount.
+		 */
+		let condition = {
+			articleId: commentData.article_id,
+			editorId: commentData.editor_id
+		};
+		let comment = {
+			userId: commentData.user_id,
+			text: commentData.text,
+			commentTime: Date.now()
+		}
+		//console.log(comment);
+		let r = await Article.findOneAndUpdate(condition, { $push: { comments: comment }, $inc: { commentCount: 1 } }, {new : true});
+		//console.log(r);
+
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)

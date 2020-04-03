@@ -234,8 +234,8 @@ exports.getArticle = async (req, res) => {
 			articleId: req.params.articleId,
 			editorId: req.params.editorId
 		};
-		await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } });
-		
+		let r = await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } }, {new : true});
+		//console.log(r);
 		
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
