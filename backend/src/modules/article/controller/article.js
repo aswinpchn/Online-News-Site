@@ -207,7 +207,13 @@ exports.getArticle = async (req, res) => {
 			}else{
 				resultArticle.lastModified = article[0].create_time
 			}
-			
+
+			let mQ = await Article.findOne({ articleId: req.params.articleId, editorId: req.params.editorId });
+			//console.log(mQ);
+			resultArticle.likeCount = mQ.likeCount;
+			resultArticle.commentCount = mQ.commentCount;
+			resultArticle.readCount = mQ.readCount;
+			resultArticle.comments = mQ.comments;
 		}
 		
 		query = "SELECT name " + 
@@ -275,4 +281,27 @@ exports.getAllCategories = async (req, res) => {
 			.send(error.message)
 	}
 
+}
+
+exports.getLikeStatus = async (req, res) => {
+	try {
+		let query = `SELECT * FROM likes WHERE user_id=${req.params.userId} and article_id=${req.params.articleId} and editor_id=${req.params.editorId}`;
+		let result = await SQLHelper(query);
+
+		let likeStatus = {};
+		if(JSON.parse(JSON.stringify(result)).length > 0) {
+			likeStatus.status = true;
+		}
+		else {
+			likeStatus.status = false;
+		}
+
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(likeStatus);
+	} catch (error) {
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
 }

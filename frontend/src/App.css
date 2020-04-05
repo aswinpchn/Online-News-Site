@@ -1,3 +1,7 @@
+@import "~@fortawesome/fontawesome-free/css/all.css";
+/*https://fontawesome.com/how-to-use/on-the-web/setup/using-package-managers */
+/*https://stackoverflow.com/questions/52455614/install-font-awesome-5-with-npm*/
+
 html {
     scroll-behavior: smooth;
 }
