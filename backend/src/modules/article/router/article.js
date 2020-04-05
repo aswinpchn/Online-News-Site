@@ -9,5 +9,5 @@ router.put('/modifyarticle', articleController.modifyArticle)
 router.get('/:editorId/:articleId', articleController.getArticle)
 router.get('/headlines',articleController.getHeadlines)
 router.get('/category/list',articleController.getAllCategories)
-
+router.get('/:editorId/:articleId/:userId', articleController.getLikeStatus);
 module.exports = router
