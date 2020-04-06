@@ -34,7 +34,7 @@ class Landing extends Component {
         let allHeadlines = [],
             index,
             articleObj
-        if (this.state.allArticles.length == 0) {
+        if (this.state.allArticles.length === 0) {
             allHeadlines = [
                 <div className="p-5">
                     <p className="display-4">Oops! Looks like there are no articles present for this category at the moment</p>

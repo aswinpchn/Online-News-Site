@@ -318,3 +318,28 @@ exports.getLikeStatus = async (req, res) => {
 			.send(error.message);
 	}
 }
+
+
+/**
+ * Get headlines for articles written by a editor.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.getHeadlinesForEditor = async (req, res) => {
+
+	try {
+		var result = await Article.find({
+			editorId : req.params.editorId
+		})
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(result)
+		
+	} catch (error) {
+		console.log(`Error while retrieving headlines ${error}`)
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message)
+	}
+
+}

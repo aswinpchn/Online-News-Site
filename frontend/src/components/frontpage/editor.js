@@ -4,50 +4,43 @@ import HeadlineCard from './headlineCard';
 import Footer from '../common/footer';
 import Navigation from '../common/navigation';
 import IsEditorCheck from '../common/isEditorCheck';
+import Constants from '../../utils/constants';
+import axios from 'axios';
 
 class Landing extends Component {
 
+    constructor() {
+        super();
+        this.state = {
+            allArticles: []
+        }
+    }
+
+    componentDidMount() {
+        axios.get(`${Constants.BACKEND_SERVER.URL}/article/headlines/editor/${localStorage.getItem('226UserId')}`)
+        .then((response) => {
+            this.setState({
+                allArticles: response.data
+            })
+        })
+    }
+
     render(){
 
-        var article1 = {
-            articleId: 23,
-            editorId: 41,
-            headline : "Tokyo Olympics Organizers Considering July 2021 for Opening Ceremony 2021 for Opening Opening Ceremony 2021 for Opening",
-            author: "John Doe",
-            catgories: ["Sports", "Politics"],
-            likeCount: 2,
-            commentCount: 3,
-            viewCount: 300
-        }
-        var article2 = {
-            articleId: 9,
-            editorId: 31,
-            headline : "April Bills Loom. The Economy Hangs on How Many Are Left Unpaid.",
-            author: "Jayda Sloan",
-            catgories: ["Sports", "Politics", "Business"],
-            likeCount: 2,
-            commentCount: 9,
-            viewCount: 120
-        }
-        var article3 = {
-            articleId: 3,
-            editorId: 19,
-            headline : "Surging Traffic Is Slowing Down Our Internet",
-            author: "Dotty Mclean",
-            catgories: ["Food"],
-            likeCount: 2,
-            commentCount: 10,
-            viewCount: 30
-        }
-        var article4 = {
-            articleId: 19,
-            editorId: 29,
-            headline : "For Drive-In Theaters, an Unexpected Revival",
-            author: "Clifford Hodgson",
-            catgories: ["Science", "Politics"],
-            likeCount: 20,
-            commentCount: 3,
-            viewCount: 28
+        let allHeadlines = [],
+            index,
+            articleObj
+        if (this.state.allArticles.length === 0) {
+            allHeadlines = [
+                <div className="p-5">
+                    <p className="display-4">Oops! Looks like there are no articles present for this category at the moment</p>
+                </div>
+            ]
+        } else {
+            for (index in this.state.allArticles) {
+                articleObj = this.state.allArticles[index]
+                allHeadlines.push(<HeadlineCard articleInfo = { articleObj } />)
+            }
         }
 
         return(
@@ -58,10 +51,7 @@ class Landing extends Component {
                     <Header />
                     <Navigation />
                     
-                    <HeadlineCard articleInfo = { article1 } />
-                    <HeadlineCard articleInfo = { article2 } />
-                    <HeadlineCard articleInfo = { article3 } />
-                    <HeadlineCard articleInfo = { article4 } />
+                    { allHeadlines }
 
                     <Footer />
                 </div>

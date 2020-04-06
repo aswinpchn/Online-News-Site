@@ -33,7 +33,7 @@ class HeadlineCard extends Component {
                             { this.props.articleInfo['commentCount'] } Comments                        
                         </div>
                         <div class="col-md-2">
-                            { this.props.articleInfo['viewCount'] } Views                     
+                            { this.props.articleInfo['readCount'] } Views                     
                         </div>
                     </div>
                 </div>
