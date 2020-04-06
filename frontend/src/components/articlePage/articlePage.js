@@ -13,11 +13,11 @@ class Landing extends Component {
         this.state = {
             headlines : "Default Headline",
             author: "John Doe",
-            categories: ["Sports", "Politics"],
-            likeCount: 2,
-            commentCount: 3,
-            readCount: 300,
-            comments: null,
+            categories: ["Test"],
+            likeCount: 9999,
+            commentCount: 9999,
+            readCount: 9999,
+            comments: [],
             lastModified: null,
             body: null,
             likeStatus: false
@@ -77,9 +77,48 @@ class Landing extends Component {
         });
     }
 
+    commentTextHandler = (e) => {
+        this.setState({
+            commentText : e.target.value
+        });
+    }
+
+    commentClickHandler = async () => {
+        // Axios fits with promise natually(Syntax wise), But we can also write with async and await. // https://github.com/axios/axios
+        try {
+            await axios.post(Constants.BACKEND_SERVER.URL + '/users/comment/',  {
+                "article_id": this.props.match.params.articleId,
+                "editor_id": this.props.match.params.editorId,
+                "user_id" : localStorage.getItem('226UserId'),
+                "text" : this.state.commentText
+            });
+
+            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }`);
+
+            let r = await axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
+
+            this.setState({
+                headlines: res.data.headlines,
+                author: res.data.name,
+                categories: res.data.categories,
+                likeCount: res.data.likeCount,
+                commentCount: res.data.commentCount,
+                readCount: res.data.readCount,
+                comments: res.data.comments,
+                lastModified: res.data.lastModified,
+                body: res.data.body,
+                likeStatus: r.data.status,
+                alreadyLikedError: false,
+                commentText: ""
+            });
+
+        }catch (error) {
+            console.log(error);
+        }
+    }
+
 
     render(){
-
         let redirectVar
         if (!localStorage.getItem('226User')) {
             redirectVar = <Redirect to="/login" />
@@ -97,6 +136,21 @@ class Landing extends Component {
             You have already like this article!
         </div>:<div></div>);
 
+        let comments = [];
+        for(let i = 0; i < this.state.comments.length; i++) {
+            comments.push(<div className="row">
+                <div className="col-md-2">
+                    {this.state.comments[i].userId}
+                </div>
+                <div className="col-md-7">
+                    {this.state.comments[i].text}
+                </div>
+                <div className="col-md-3">
+                    {this.state.comments[i].commentTime}
+                </div>
+            </div>);
+        }
+
         return(
             <div>
                 { redirectVar }
@@ -105,14 +159,13 @@ class Landing extends Component {
                     <Header />
                     <Navigation />
 
-                    <div
-                      className="text-dark text-decoration-none">
+                    <div className="text-dark text-decoration-none">
                         <div className="p-4 shadow">
                             <p className="display-4">{headline}</p>
                             <div>
                                 {categories}
                             </div>
-                            <div className="border">
+                            <div className="border" id="articlePageBody">
                                 {this.state.body}
                             </div>
                             <div className="row font-weight-lighter">
@@ -134,6 +187,22 @@ class Landing extends Component {
                                 </div>
                                 <div className="col-md-10">
                                     {alreadyLikedError}
+                                </div>
+                            </div>
+                            <div className="CommentsArea border" id="articlePageComments">
+                                <div className="ExistingComments">
+                                    {comments}
+                                </div>
+                                <div className="input-group flex-nowrap newComment">
+                                    <div className="input-group-prepend">
+                                        <span className="input-group-text" id="addon-wrapping">Enter Comment</span>
+                                    </div>
+                                    <input type="text" className="form-control" aria-label="Username" aria-describedby="addon-wrapping" id="commentEntry" onChange={this.commentTextHandler} value={this.state.commentText}/>
+                                    <div className="input-group-append">
+                                        <button className="btn btn-outline-secondary" type="button" id="commentButton" disabled={!this.state.commentText} onClick={this.commentClickHandler}>
+                                            Comment
+                                        </button>
+                                    </div>
                                 </div>
                             </div>
                         </div>
