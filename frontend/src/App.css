@@ -9,3 +9,12 @@ html {
     width: 200px;
     transition: 1s;
 }
+
+/*https://stackoverflow.com/questions/44484907/index-css-vs-app-css-in-default-app-created-by-create-react-app-whats-the*/
+#articlePageBody {
+    margin-top: 10px;
+}
+#articlePageComments {
+    margin-top: 10px;
+    font-size: 12px;
+}
