@@ -1,5 +1,4 @@
 import mongoose from 'mongoose';
-import Comment from './comment'
 
 const schema = new mongoose.Schema({
   articleId: {
@@ -10,11 +9,27 @@ const schema = new mongoose.Schema({
     type: Number,
     required: true
   },
+  headline: {
+    type: String,
+    required: true
+  },
+  editorName: {
+    type: String,
+    required: true
+  },
+  categories: {
+    type: [String],
+    required: true
+  },
   likeCount: {
-    type: Number
+    type: Number,
+    required: true,
+    default: 0
   },
   readCount: {
-    type: Number
+    type: Number,
+    required: true,
+    default: 0
   },
   comments: [{
     userId: {
@@ -31,7 +46,9 @@ const schema = new mongoose.Schema({
     }
   }],
   commentCount: {
-    type: Number
+    type: Number,
+    required: true,
+    default: 0
   }
 });
 

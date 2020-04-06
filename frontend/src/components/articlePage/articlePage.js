@@ -25,11 +25,11 @@ class Landing extends Component {
     }
 
     componentDidMount() {
-        axios.get(Constants.BACKEND_SERVER.URL + `/article/${this.props.match.params.editorId }/${this.props.match.params.articleId }`)
+        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }`)
           .then((response) => {
               //console.log(response);
 
-              axios.get(Constants.BACKEND_SERVER.URL + `/article/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`)
+              axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`)
                 .then((res) => {
                     this.setState({
                         headlines: response.data.headlines,

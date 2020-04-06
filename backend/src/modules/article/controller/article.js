@@ -36,6 +36,7 @@ exports.saveArticle = async (req, res) => {
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.EDITOR_DOES_NOT_EXIST)
 		}
+		const editorName = result[0].name
 		
 		query = "SELECT max(article_id) AS previous_article_no FROM article WHERE editor_id = '" + articleData.editor_id +"'"
 		var result = await SQLHelper(query)
@@ -50,14 +51,14 @@ exports.saveArticle = async (req, res) => {
 
 		query = "INSERT INTO article (editor_id, article_id , headlines, body, create_time) VALUES ('" + articleData.editor_id + "','"+ article_id +"','" + articleData.headlines + "', '" + articleData.body + "', '" + create_time + "')"
 		var result = await SQLHelper(query)
-		console.log("Result : " + JSON.stringify(result, null, 2))
+		// console.log("Result : " + JSON.stringify(result, null, 2))
 
 		
 		var categories = articleData.categories
 		for(var i =0 ;i < categories.length ; i++){
 			query = "INSERT INTO belongs_to VALUES ('" + articleData.editor_id + "','"+ article_id + "','"+ categories[i] + "')"
 			var result = await SQLHelper(query)
-			console.log("Result : " + JSON.stringify(result, null, 2))	
+			// console.log("Result : " + JSON.stringify(result, null, 2))	
 		}
 
 
@@ -67,6 +68,9 @@ exports.saveArticle = async (req, res) => {
 		let newArticle = new Article({
 			articleId: article_id,
 			editorId: articleData.editor_id,
+			editorName: editorName,
+			headline: articleData.headlines,
+			categories: articleData.categories,
 			readCount: 0,
 			likeCount: 0,
 			commentCount: 0,
@@ -74,7 +78,7 @@ exports.saveArticle = async (req, res) => {
 		});
 
 		let createdArticle = await newArticle.save();
-		console.log(createdArticle);
+		// console.log(createdArticle);
 
 
 
@@ -143,11 +147,12 @@ exports.getHeadlines = async (req, res) => {
 		var type = req.query.type
 		
 		if(type.toLowerCase() == 'all'){
-			query = "SELECT article_id,editor_id,headlines FROM article"
+			query = "SELECT article_id, editor_id FROM article"
 			var allheadline = await SQLHelper(query)
+			var result = await Article.find({})
 			return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(allheadline)
+			.send(result)
 		}else{
 			query = "SELECT name FROM category WHERE name='" + type +"'"
 			var exists =await SQLHelper(query)
@@ -187,7 +192,6 @@ exports.getArticle = async (req, res) => {
 
 	var query
 	var resultArticle ={}
-	console.log(req.params)
 	try {
 		
 		query = "SELECT name, headlines, body, create_time, modified_time " +

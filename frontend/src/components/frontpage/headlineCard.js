@@ -10,10 +10,10 @@ class HeadlineCard extends Component {
         }
         let categories = [],
             index
-        for (index = 0; index < this.props.articleInfo['catgories'].length; index++) {
-            categories.push(<span class="bg-secondary text-white ml-2 p-1 rounded">{ this.props.articleInfo['catgories'][index] }</span>)
+        for (index = 0; index < this.props.articleInfo['categories'].length; index++) {
+            categories.push(<span class="bg-secondary text-white ml-2 p-1 rounded">{ this.props.articleInfo['categories'][index] }</span>)
         }
-        let authorOrEdit = [<span class="font-weight-bold">- { this.props.articleInfo['author'] }</span>]
+        let authorOrEdit = [<span class="font-weight-bold">- { this.props.articleInfo['editorName'] }</span>]
         if (localStorage.getItem('226UserType') === "Editor") {
             authorOrEdit = [<a href={ "/edit-article/" + this.props.articleInfo['editorId'] +"/" + this.props.articleInfo['articleId'] } class="text-decoration-none"><span class="bg-primary p-1 mr-2 text-white rounded">Edit this article</span></a>]
         }
