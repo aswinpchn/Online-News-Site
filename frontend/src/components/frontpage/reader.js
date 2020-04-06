@@ -34,10 +34,19 @@ class Landing extends Component {
         let allHeadlines = [],
             index,
             articleObj
-        for (index in this.state.allArticles) {
-            articleObj = this.state.allArticles[index]
-            allHeadlines.push(<HeadlineCard articleInfo = { articleObj } />)
+        if (this.state.allArticles.length == 0) {
+            allHeadlines = [
+                <div className="p-5">
+                    <p className="display-4">Oops! Looks like there are no articles present for this category at the moment</p>
+                </div>
+            ]
+        } else {
+            for (index in this.state.allArticles) {
+                articleObj = this.state.allArticles[index]
+                allHeadlines.push(<HeadlineCard articleInfo = { articleObj } />)
+            }
         }
+
         return(
             <div>
                 { RedirectVar }

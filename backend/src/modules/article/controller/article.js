@@ -147,8 +147,6 @@ exports.getHeadlines = async (req, res) => {
 		var type = req.query.type
 		
 		if(type.toLowerCase() == 'all'){
-			query = "SELECT article_id, editor_id FROM article"
-			var allheadline = await SQLHelper(query)
 			var result = await Article.find({})
 			return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
@@ -163,14 +161,25 @@ exports.getHeadlines = async (req, res) => {
 				.send("Invalid option : " + type)
 			}
 
-			query = "SELECT article.article_id,editor.editor_id,headlines FROM article JOIN editor ON article.editor_id = editor.editor_id  JOIN belongs_to ON article.editor_id = belongs_to.editor_id AND belongs_to.article_id = article.article_id WHERE belongs_to.name = '"+ type + "' "
-			var headlinesForCategory = await SQLHelper(query)
-			if (headlinesForCategory.length > 0){
-				console.log("Category :" + type + "Headlines \n" + JSON.stringify(headlinesForCategory))
-				return res
-				.status(constants.STATUS_CODE.SUCCESS_STATUS)
-				.send(headlinesForCategory)
+			query = `SELECT article_id, editor_id ` +
+					`FROM belongs_to `+
+					`WHERE name = "${type}"` ;
+			var result = await SQLHelper(query)	
+			let allHeadlines = []	
+			for (var index in result) {
+				var temp = await Article.findOne({
+					editorId: result[index].editor_id,
+					articleId: result[index].article_id
+				})
+				if (temp) {
+					allHeadlines.push(temp)
+				}
+				
 			}
+			console.log(allHeadlines)
+			return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(allHeadlines)
 		}
 		
 	} catch (error) {
