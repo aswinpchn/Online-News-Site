@@ -150,7 +150,7 @@ exports.getHeadlines = async (req, res) => {
 			var result = await Article.find({})
 			return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result)
+			.send(result.reverse())
 		}else{
 			query = "SELECT name FROM category WHERE name='" + type +"'"
 			var exists =await SQLHelper(query)
@@ -176,10 +176,9 @@ exports.getHeadlines = async (req, res) => {
 				}
 				
 			}
-			console.log(allHeadlines)
 			return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(allHeadlines)
+			.send(allHeadlines.reverse())
 		}
 		
 	} catch (error) {
@@ -333,7 +332,7 @@ exports.getHeadlinesForEditor = async (req, res) => {
 		})
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result)
+			.send(result.reverse())
 		
 	} catch (error) {
 		console.log(`Error while retrieving headlines ${error}`)
