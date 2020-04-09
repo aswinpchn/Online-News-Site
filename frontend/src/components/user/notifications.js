@@ -42,7 +42,9 @@ class UserNotifications extends Component {
 						{notifications.map((notification) => {
 							if (notification.status === 'COMMENTS') {
 								return (
-									<p>
+									<p>	<i style={{fontSize : '24px'}} class='fas'>&#xf4ad;</i>
+										{' '}
+										
 										<b>{notification.name}</b> commented on article{' '}
 										<b>{notification.headlines}</b> at{' '}
 										<b>{notification.time}</b>
@@ -51,6 +53,12 @@ class UserNotifications extends Component {
 							} else if (notification.status === 'MODIFIED') {
 								return (
 									<p>
+										
+										<span class="fa-stack fa-sm">
+  											<i class="fas fa-sync-alt fa-pulse" style={{color: '#33FF33', fontSize : '10px'}}></i>
+  											<i class='far fa-newspaper fa-stack-2x' style={{fontSize:'28px'}}></i>
+										</span>
+										{' '}
 										An article <b>{notification.headlines}</b>
                       					has been modified under the <b>
 											{notification.name}
@@ -61,6 +69,7 @@ class UserNotifications extends Component {
 							} else if (notification.status === 'NEW') {
 								return (
 									<p>
+										<i style={{fontSize : '24px'}} class='fas'>&#xf1ea;</i>
 										{' '}
                       					A new article <b>{notification.headlines}</b> has been
                       					posted under

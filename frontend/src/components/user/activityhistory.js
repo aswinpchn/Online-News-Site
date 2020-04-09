@@ -62,6 +62,8 @@ class UserActivityHistory extends Component {
 								} else if (activity.type === 'subscribed') {
 									return (
 										<p>
+											<i style={{fontSize : '24px'}} class='fas'>&#xf02e;</i>
+											{' '}
 											You subscribed to <b>{activity.content}</b> at{' '}
 											<b>{activity.time}</b>
 										</p>
