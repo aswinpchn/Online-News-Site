@@ -25,7 +25,13 @@ class Landing extends Component {
     }
 
     componentDidMount() {
-        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }`)
+        let  viewerId;
+        if(localStorage.getItem('226UserType') === "Editor"){
+            viewerId = "Editor"
+        }else{
+            viewerId = localStorage.getItem('226UserId');
+        }
+        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }/${viewerId}`)
           .then((response) => {
               //console.log(response);
 
