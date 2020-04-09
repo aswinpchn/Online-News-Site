@@ -42,33 +42,40 @@ class UserNotifications extends Component {
 						if (notification.status === 'COMMENTS') {
 							return (
 								<p>
-									<span className="font-italic"> {notification.name} </span> commented on article
+									<i style={{ fontSize: '24px' }} class='fas'>&#xf4ad;</i>
+									<span className="font-italic"> {notification.name} </span> 
+									<span> commented on article </span> 
 									<a className="font-weight-bold text-dark" href={`/article/${notification.editor_id}/${notification.article_id}`}>
 										<span> {notification.headlines} </span>
 									</a>
-									at
+									<span> at </span> 
 									<span className="font-italic"> {notification.time} </span>
 								</p>
 							);
 						} else if (notification.status === 'MODIFIED') {
 							return (
 								<p>
-									An article
+									<span class="fa-stack fa-sm">
+										<i class="fas fa-sync-alt fa-pulse" style={{ color: '#33FF33', fontSize: '10px' }}></i>
+										<i class='far fa-newspaper fa-stack-2x' style={{ fontSize: '28px' }}></i>
+									</span>
+									<span> An article </span> 
 									<a className="font-weight-bold text-dark" href={`/article/${notification.editor_id}/${notification.article_id}`}>
 										<span> {notification.headlines} </span>
 									</a>
-									has been modified at
+									<span> has been modified at </span> 
 									<span className="font-italic"> {notification.time} </span>
 								</p>
 							);
 						} else if (notification.status === 'NEW') {
 							return (
 								<p>
-									A new article
+									<i style={{ fontSize: '24px' }} class='fas'>&#xf1ea;</i>
+									<span> A new article </span>
 									<a className="font-weight-bold text-dark" href={`/article/${notification.editor_id}/${notification.article_id}`}>
 										<span> {notification.headlines} </span>
 									</a>
-									has been posted at
+									<span> has been posted at </span> 
 									<span className="font-italic"> {notification.time} </span>
 								</p>
 							);
