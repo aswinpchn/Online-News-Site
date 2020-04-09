@@ -12,13 +12,22 @@ class Home extends Component {
     }
 
     componentDidMount() {
-
+        
         if (localStorage.getItem('226UserType') === "User") {
+            
+            var path = window.location.pathname.split("/")
+
+            if (path[2] === "all") {
+                this.setState({
+                    isSubscribed: true
+                })
+                return
+            }
 
             axios.get(`${Constants.BACKEND_SERVER.URL}/users/subscribedCategories/${localStorage.getItem('226UserId')}`)
                 .then((response) => {
                     // console.log(response.data)
-                    var path = window.location.pathname.split("/")
+                    
                     if (path[1] !== "frontpage") {
                         this.setState({
                             isSubscribed: true
