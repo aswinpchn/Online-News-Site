@@ -7,7 +7,7 @@ class IsReader extends Component {
         if (localStorage.getItem('226UserType') === "Editor") {
             RedirectVar = <Redirect to="/editor" />;
         } else if (!localStorage.getItem('226UserType')) {
-            RedirectVar = <Redirect to="/login" />;
+            RedirectVar = <Redirect to={`/login?${window.location.pathname}`} />;
         }
         
 		return (

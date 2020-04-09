@@ -23,7 +23,6 @@ class Home extends Component {
                         this.setState({
                             isSubscribed: true
                         })
-                        console.log("HERE")
                         return
                     }
                     if (path.length > 1 && response.data.includes(path[2])) {

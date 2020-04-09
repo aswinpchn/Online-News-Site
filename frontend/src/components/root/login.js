@@ -53,9 +53,20 @@ class Home extends Component {
         })
     }
 
+    getRedirectValue = () => {
+        let search = window.location.search
+        if (search === "") {
+            return null
+        }
+        return search.substr(1,)
+    }
+
     render() {
-        let RedirectVar;
-        if (localStorage.getItem('226User')) {
+        let RedirectVar,
+            redirectTo = this.getRedirectValue()
+        if (localStorage.getItem('226User') && redirectTo !== null) {
+            RedirectVar = <Redirect to={ redirectTo } />
+        } else if (localStorage.getItem('226User')) {
             RedirectVar = <Redirect to="/frontpage/all" />
         }
 

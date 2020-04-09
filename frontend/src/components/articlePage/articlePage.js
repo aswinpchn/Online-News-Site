@@ -121,7 +121,7 @@ class Landing extends Component {
     render(){
         let redirectVar
         if (!localStorage.getItem('226User')) {
-            redirectVar = <Redirect to="/login" />
+            redirectVar = <Redirect to={`/login?${window.location.pathname}`} />
         }
 
         var headline = this.state.headlines;
