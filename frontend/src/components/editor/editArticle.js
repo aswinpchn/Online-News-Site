@@ -21,7 +21,7 @@ class Landing extends Component {
     }
     
     componentDidMount() {
-        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${ this.props.match.params.editorId }/${ this.props.match.params.articleId }`)
+        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${ this.props.match.params.editorId }/${ this.props.match.params.articleId }/Editor`)
         .then((response) => {
             this.setState({
                 headlines: response.data.headlines,
