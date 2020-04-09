@@ -467,3 +467,39 @@ exports.getUserActivity = async (req, res) => {
 			.send(error.message);
 	}
 }
+
+
+/**
+ * Get list of all categories subscribed by an user.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.subscribedCategories = async (req, res) => {
+	try {
+		let query,
+			subscribedCategories = [],
+			result,
+			index
+
+		query = `SELECT name ` +
+			` FROM subscribed_to ` +
+			` WHERE user_id = ${ req.params.userId };`;
+
+		result = await SQLHelper(query);
+		
+		for (index in result) {
+			subscribedCategories.push(result[index].name.toLowerCase())
+		}
+
+		return res
+			.status(constants.STATUS_CODE.SUCCESS_STATUS)
+			.send(subscribedCategories);
+
+	} catch (error) {
+		console.log(`Error while getting subscribed category details ${error}`);
+
+		return res
+			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+			.send(error.message);
+	}
+}
