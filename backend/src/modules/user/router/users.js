@@ -15,6 +15,7 @@ router.get('/notifications/:userId', userController.getNotifications)
 router.post('/like', userController.likeArticle);
 router.post('/comment', userController.commentOnArticle);
 router.post('/subscribe', userController.subscribeToACategory);
+router.get('/subscribedCategories/:userId', userController.subscribedCategories);
 router.get('/activity/:userId', userController.getUserActivity);
 
 module.exports = router

@@ -1,22 +1,20 @@
-'use strict'
+'use strict';
 
 //import Users from '../../../models/mongoDB/users'
-import constants from '../../../utils/constants'
-import mongoose from 'mongoose'
-import model from '../../../models/sqlDB/index'
-import SQLHelper from '../../../models/sqlDB/helper'
-import { EncryptPassword, validatePassword } from '../../../utils/hashPassword'
-import { isUniqueEmail } from '../../../utils/validateEmail'
+import constants from '../../../utils/constants';
+import mongoose from 'mongoose';
+import model from '../../../models/sqlDB/index';
+import SQLHelper from '../../../models/sqlDB/helper';
+import { EncryptPassword, validatePassword } from '../../../utils/hashPassword';
+import { isUniqueEmail } from '../../../utils/validateEmail';
 import log4js from 'log4js';
-import Article from '../../../models/mongoDB/article'
+import Article from '../../../models/mongoDB/article';
 
 exports.dummy = async (req, res) => {
   const logger = log4js.getLogger('log');
   logger.info('Inside the dummy method in user!');
-  return res
-    .status(constants.STATUS_CODE.ACCEPTED_STATUS)
-    .send("Dummy")
-}
+  return res.status(constants.STATUS_CODE.ACCEPTED_STATUS).send('Dummy');
+};
 
 /**
  * Create user and save data in database.
@@ -24,10 +22,10 @@ exports.dummy = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.createUser = async (req, res) => {
-  let createdUser
-  var query
-  var userData = req.body
-  console.log(req.body)
+  let createdUser;
+  var query;
+  var userData = req.body;
+  console.log(req.body);
   try {
     // userData = {
     // 	email : "jayasurya.pinaki@sjsu.edu",
@@ -40,22 +38,35 @@ exports.createUser = async (req, res) => {
     if (!isUniqueEmail(userData.email)) {
       return res
         .status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
-        .send(constants.MESSAGES.USER_ALREADY_EXISTS)
+        .send(constants.MESSAGES.USER_ALREADY_EXISTS);
     }
 
-    userData.password = EncryptPassword(userData.password)
-    query = "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" + userData.name + "', '" + userData.DOB + "', '" + userData.location + "', '" + userData.sex + "', '" + userData.email + "', '" + userData.password + "')"
-    await SQLHelper(query)
+    userData.password = EncryptPassword(userData.password);
+    query =
+      "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" +
+      userData.name +
+      "', '" +
+      userData.DOB +
+      "', '" +
+      userData.location +
+      "', '" +
+      userData.sex +
+      "', '" +
+      userData.email +
+      "', '" +
+      userData.password +
+      "')";
+    await SQLHelper(query);
     return res
       .status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
-      .send(createdUser)
+      .send(createdUser);
   } catch (error) {
-    console.log(`Error while creating user ${error}`)
+    console.log(`Error while creating user ${error}`);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-      .send(error.message)
+      .send(error.message);
   }
-}
+};
 
 /**
  * Login user and send auth token and user details in response.
@@ -67,52 +78,58 @@ exports.loginUser = async (req, res) => {
     var user,
       isAuth = false,
       query,
-      loginData = req.body
+      loginData = req.body;
     // var loginData = {
     // 	email : "jayasurya.pinaki@sjsu.edu",
     // 	password : "password123"
     // }
 
-    query = "SELECT user_id, name, password from user where email = '" + loginData.email + "'"
-    user = await SQLHelper(query)
+    query =
+      "SELECT user_id, name, password from user where email = '" +
+      loginData.email +
+      "'";
+    user = await SQLHelper(query);
 
     if (user.length > 0) {
-      const validate = validatePassword(loginData.password, user[0].password)
+      const validate = validatePassword(loginData.password, user[0].password);
       if (validate) {
-        user = user[0]
-        delete user.password
-        user['type'] = "User"
-        isAuth = true
-        return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user)
+        user = user[0];
+        delete user.password;
+        user['type'] = 'User';
+        isAuth = true;
+        return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user);
       }
     }
 
-    query = "SELECT editor_id as user_id, name, password from editor where email = '" + loginData.email + "'"
-    user = await SQLHelper(query)
+    query =
+      "SELECT editor_id as user_id, name, password from editor where email = '" +
+      loginData.email +
+      "'";
+    user = await SQLHelper(query);
 
     if (user.length > 0) {
-      const validate = validatePassword(loginData.password, user[0].password)
+      const validate = validatePassword(loginData.password, user[0].password);
       if (validate) {
-        user = user[0]
-        delete user.password
-        user['type'] = "Editor"
-        isAuth = true
-        return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user)
+        user = user[0];
+        delete user.password;
+        user['type'] = 'Editor';
+        isAuth = true;
+        return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user);
       }
     }
 
     if (!isAuth) {
       return res
         .status(constants.STATUS_CODE.UNAUTHORIZED_ERROR_STATUS)
-        .send(constants.MESSAGES.AUTHORIZATION_FAILED)
+        .send(constants.MESSAGES.AUTHORIZATION_FAILED);
     }
   } catch (error) {
-    console.log(`Error while logging in user ${error}`)
+    console.log(`Error while logging in user ${error}`);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-      .send(error.message)
+      .send(error.message);
   }
-}
+};
 
 /**
  * Get user profile details based on userid.
@@ -120,24 +137,27 @@ exports.loginUser = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getUserProfile = async (req, res) => {
-  var query
+  var query;
   try {
-    query = "SELECT email, name, sex, DOB, location from user where user_id = '" + req.params.userId + "'"
-    let details = await SQLHelper(query)
+    query =
+      "SELECT email, name, sex, DOB, location from user where user_id = '" +
+      req.params.userId +
+      "'";
+    let details = await SQLHelper(query);
 
     if (details.length > 0) {
-      details = details[0]
-      return res.status(200).send(details)
+      details = details[0];
+      return res.status(200).send(details);
     } else {
-      return res.status(204).json()
+      return res.status(204).json();
     }
   } catch (error) {
-    console.log(`Error while getting user profile details ${error}`)
+    console.log(`Error while getting user profile details ${error}`);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-      .send(error.message)
+      .send(error.message);
   }
-}
+};
 
 /**
  * Update user details based on userid.
@@ -146,7 +166,6 @@ exports.getUserProfile = async (req, res) => {
  */
 exports.updateUserProfile = async (req, res) => {
   try {
-
     // req = {
     // 	body :{
     // 		userId : 5,
@@ -161,45 +180,51 @@ exports.updateUserProfile = async (req, res) => {
     if (req.body.email == undefined) {
       return res
         .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-        .send(constants.MESSAGES.USER_VALUES_MISSING)
+        .send(constants.MESSAGES.USER_VALUES_MISSING);
     }
 
-    var query = "SELECT user_id from user where email = '" + req.body.email + "' and user_id != '" + req.body.userId + "'"
-    var result = await SQLHelper(query)
+    var query =
+      "SELECT user_id from user where email = '" +
+      req.body.email +
+      "' and user_id != '" +
+      req.body.userId +
+      "'";
+    var result = await SQLHelper(query);
     if (result.length > 0) {
       return res
         .status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
-        .send(constants.MESSAGES.USER_ALREADY_EXISTS)
+        .send(constants.MESSAGES.USER_ALREADY_EXISTS);
     }
 
-    query = "SELECT editor_id from editor where email = '" + req.body.email + "'"
-    var result = await SQLHelper(query)
+    query =
+      "SELECT editor_id from editor where email = '" + req.body.email + "'";
+    var result = await SQLHelper(query);
     if (result.length > 0) {
       return res
         .status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
-        .send(constants.MESSAGES.USER_ALREADY_EXISTS)
+        .send(constants.MESSAGES.USER_ALREADY_EXISTS);
     }
 
-    query = ""
-    let userObj = req.body
+    query = '';
+    let userObj = req.body;
 
     // updating with or without password
     if (req.body.password) {
-      userObj.password = EncryptPassword(req.body.password)
-      query = `UPDATE user SET email = "${userObj.email}", password = "${userObj.password}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${userObj.userId}`
+      userObj.password = EncryptPassword(req.body.password);
+      query = `UPDATE user SET email = "${userObj.email}", password = "${userObj.password}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${userObj.userId}`;
     } else {
-      query = `UPDATE user SET email = "${userObj.email}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${userObj.userId}`
+      query = `UPDATE user SET email = "${userObj.email}", name = "${userObj.name}", sex = "${userObj.sex}", DOB = "${userObj.DOB}", location = "${userObj.location}" WHERE user_id = ${userObj.userId}`;
     }
 
-    await SQLHelper(query)
-    return res.status(200).json()
+    await SQLHelper(query);
+    return res.status(200).json();
   } catch (error) {
-    console.log(`Error while getting user profile details ${error}`)
+    console.log(`Error while getting user profile details ${error}`);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-      .send(error.message)
+      .send(error.message);
   }
-}
+};
 
 /**
  * Get notifications for user based on userid.
@@ -207,66 +232,72 @@ exports.updateUserProfile = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getNotifications = async (req, res) => {
-  var query
+  var query;
   try {
-
-    query = "( " +
+    query =
+      '( ' +
       "SELECT NULL as name, A.editor_id as editor_id, A.article_id as article_id, A.headlines as headlines, A.create_time as time, 'NEW' as status " +
-      "FROM article A JOIN ( " +
-      "SELECT editor_id, article_id, name, s_time " +
-      "FROM belongs_to NATURAL JOIN ( " +
-      "SELECT name, s_time " +
-      "FROM subscribed_to " +
-      "WHERE user_id = " + req.params.userId +
-      ") innerTable " +
-      ") B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.create_time > B.s_time " +
-      ") " +
-      "UNION" +
-      " ( " +
+      'FROM article A JOIN ( ' +
+      'SELECT editor_id, article_id, name, s_time ' +
+      'FROM belongs_to NATURAL JOIN ( ' +
+      'SELECT name, s_time ' +
+      'FROM subscribed_to ' +
+      'WHERE user_id = ' +
+      req.params.userId +
+      ') innerTable ' +
+      ') B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.create_time > B.s_time ' +
+      ') ' +
+      'UNION' +
+      ' ( ' +
       "SELECT NULL as name, A.editor_id as editor_id, A.article_id as article_id, A.headlines as headlines, A.modified_time as time, 'MODIFIED' as status " +
-      "FROM article A JOIN ( " +
-      "SELECT editor_id, article_id, name, s_time " +
-      "FROM belongs_to NATURAL JOIN ( " +
-      "SELECT name, s_time " +
-      "FROM subscribed_to " +
-      "WHERE user_id =" + req.params.userId +
-      ") innerTable " +
-      ") B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.modified_time > B.s_time " +
-      ") " +
-      "UNION" +
-      " ( " +
+      'FROM article A JOIN ( ' +
+      'SELECT editor_id, article_id, name, s_time ' +
+      'FROM belongs_to NATURAL JOIN ( ' +
+      'SELECT name, s_time ' +
+      'FROM subscribed_to ' +
+      'WHERE user_id =' +
+      req.params.userId +
+      ') innerTable ' +
+      ') B ON A.editor_id = B.editor_id AND A.article_id = B.article_id AND A.modified_time > B.s_time ' +
+      ') ' +
+      'UNION' +
+      ' ( ' +
       "SELECT name, editor_id, article_id, headlines, c_time as time, 'COMMENTS' as status " +
-      "FROM comments NATURAL JOIN ( " +
-      "SELECT min(c_time) AS mintime, editor_id, article_id " +
-      "FROM comments " +
-      "WHERE user_id = " + req.params.userId + " " +
-      "GROUP BY editor_id, article_id " +
-      ") A NATURAL JOIN article NATURAL JOIN user " +
-      "WHERE user_id != " + req.params.userId + " AND mintime <= c_time " +
-      ") " +
-      "ORDER BY time desc";
+      'FROM comments NATURAL JOIN ( ' +
+      'SELECT min(c_time) AS mintime, editor_id, article_id ' +
+      'FROM comments ' +
+      'WHERE user_id = ' +
+      req.params.userId +
+      ' ' +
+      'GROUP BY editor_id, article_id ' +
+      ') A NATURAL JOIN article NATURAL JOIN user ' +
+      'WHERE user_id != ' +
+      req.params.userId +
+      ' AND mintime <= c_time ' +
+      ') ' +
+      'ORDER BY time desc';
 
-    let details = await SQLHelper(query)
+    let details = await SQLHelper(query);
 
     if (details.length > 0) {
-      return res.status(200).send(details)
+      return res.status(200).send(details);
     } else {
-      return res.status(204).json()
+      return res.status(204).json();
     }
   } catch (error) {
-    console.log(`Error while getting user profile details ${error}`)
+    console.log(`Error while getting user profile details ${error}`);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-      .send(error.message)
+      .send(error.message);
   }
-}
+};
 
 exports.likeArticle = async (req, res) => {
   let likeData = req.body;
   console.log(likeData);
   try {
-
-    let query = `INSERT INTO` +
+    let query =
+      `INSERT INTO` +
       ` likes (user_id, article_id, editor_id, l_time)` +
       ` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editor_id} , NOW() );`;
 
@@ -274,14 +305,18 @@ exports.likeArticle = async (req, res) => {
 
     // console.log(result);
 
-		/*
+    /*
 		Maintaing likeCount seperately, this way, for quickview, we can avoid SQL queries.
 		 */
     let condition = {
       articleId: likeData.article_id,
-      editorId: likeData.editor_id
+      editorId: likeData.editor_id,
     };
-    let r = await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } }, { new: true });
+    let r = await Article.findOneAndUpdate(
+      condition,
+      { $inc: { likeCount: 1 } },
+      { new: true }
+    );
     //console.log(r);
 
     return res
@@ -293,43 +328,45 @@ exports.likeArticle = async (req, res) => {
     if (error.code != null && error.code == 'ER_DUP_ENTRY')
       return res
         .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-        .send("You have already like this article before");
+        .send('You have already like this article before');
 
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
       .send(error.message);
   }
-}
+};
 
 exports.commentOnArticle = async (req, res) => {
   let commentData = req.body;
   console.log(commentData);
   try {
-
-    let query = `INSERT INTO` +
+    let query =
+      `INSERT INTO` +
       ` comments (user_id, article_id, editor_id, text, c_time)` +
       ` VALUES ( ${commentData.user_id} , ${commentData.article_id} , ${commentData.editor_id} , '${commentData.text}' , NOW() );`;
 
     let result = await SQLHelper(query);
     // console.log(result);
 
-
-		/*
+    /*
 		Appending the comment to the article document, incrementing the commentCount.
 		 */
     let condition = {
       articleId: commentData.article_id,
-      editorId: commentData.editor_id
+      editorId: commentData.editor_id,
     };
     let comment = {
       userId: commentData.user_id,
       text: commentData.text,
-      commentTime: Date.now()
-    }
+      commentTime: Date.now(),
+    };
     //console.log(comment);
-    let r = await Article.findOneAndUpdate(condition, { $push: { comments: comment }, $inc: { commentCount: 1 } }, { new: true });
+    let r = await Article.findOneAndUpdate(
+      condition,
+      { $push: { comments: comment }, $inc: { commentCount: 1 } },
+      { new: true }
+    );
     //console.log(r);
-
 
     return res
       .status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
@@ -341,14 +378,14 @@ exports.commentOnArticle = async (req, res) => {
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
       .send(error.message);
   }
-}
+};
 
 exports.subscribeToACategory = async (req, res) => {
   let subscribeData = req.body;
   console.log(subscribeData);
   try {
-
-    let query = `INSERT INTO` +
+    let query =
+      `INSERT INTO` +
       ` subscribed_to (user_id, name, s_time)` +
       ` VALUES ( ${subscribeData.user_id} , '${subscribeData.category_name}' , NOW() );`;
 
@@ -364,27 +401,27 @@ exports.subscribeToACategory = async (req, res) => {
 
     console.log(error);
 
-    if (error.code = 'ER_NO_REFERENCED_ROW_2')
+    if ((error.code = 'ER_NO_REFERENCED_ROW_2'))
       return res
         .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-        .send("There is no category with this category_name");
+        .send('There is no category with this category_name');
 
     if (error.code == 'ER_DUP_ENTRY')
       return res
         .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-        .send("This user has already subscribed this category");
+        .send('This user has already subscribed this category');
 
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
       .send(error.message);
   }
-}
+};
 
 /*
-* This api deals with views, likes, comments and subscribed tables.
-* For a given user, his views, liked, comments and subscribed history is retrieved.
-* The result is sent back as array in chronological order.
-*/
+ * This api deals with views, likes, comments and subscribed tables.
+ * For a given user, his views, liked, comments and subscribed history is retrieved.
+ * The result is sent back as array in chronological order.
+ */
 exports.getUserActivity = async (req, res) => {
   try {
     let userId = req.params.userId;
@@ -392,7 +429,8 @@ exports.getUserActivity = async (req, res) => {
 
     let activity = [];
 
-    let viewedQuery = `SELECT A.article_id, A.editor_id, A.headlines content,  r_time time, 'viewed' as type` +
+    let viewedQuery =
+      `SELECT A.article_id, A.editor_id, A.headlines content,  r_time time, 'viewed' as type` +
       ` FROM views V, article A` +
       ` WHERE V.user_id = ${userId} and V.article_id = A.article_id and V.editor_id = A.editor_id;`;
 
@@ -403,8 +441,8 @@ exports.getUserActivity = async (req, res) => {
     }
     //console.log(activity);
 
-
-    let likedQuery = `SELECT A.article_id, A.editor_id, A.headlines content, l_time time, 'liked' as type ` +
+    let likedQuery =
+      `SELECT A.article_id, A.editor_id, A.headlines content, l_time time, 'liked' as type ` +
       ` FROM likes L, article A` +
       ` WHERE L.user_id = ${userId} and L.article_id = A.article_id and L.editor_id = A.editor_id;`;
 
@@ -415,8 +453,7 @@ exports.getUserActivity = async (req, res) => {
     }
     //console.log(activity);
 
-
-		/*
+    /*
 		Get the whole article collection, go through each articles comment, finding the given user's comments.
 		 */
     let r = await Article.find({});
@@ -428,21 +465,25 @@ exports.getUserActivity = async (req, res) => {
           data.article_id = r[i].articleId;
           data.editor_id = r[i].editorId;
           data.content = r[i].headline;
-          data.type = "commented";
+          data.type = 'commented';
           data.time = r[i].comments[j].commentTime;
           activity.push(data);
         }
       }
     }
 
-
-    let subscribedQuery = `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
+    let subscribedQuery =
+      `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
       ` FROM subscribed_to S, category C` +
       ` WHERE S.user_id = ${userId} and S.name = C.name;`;
 
     let subscribedResult = await SQLHelper(subscribedQuery);
 
-    for (let i = 0; i < JSON.parse(JSON.stringify(subscribedResult)).length; i++) {
+    for (
+      let i = 0;
+      i < JSON.parse(JSON.stringify(subscribedResult)).length;
+      i++
+    ) {
       activity.push(JSON.parse(JSON.stringify(subscribedResult))[i]);
     }
     //console.log(activity);
@@ -456,9 +497,7 @@ exports.getUserActivity = async (req, res) => {
     });
     // console.log(activity); After sorting.
 
-    return res
-      .status(constants.STATUS_CODE.SUCCESS_STATUS)
-      .send(activity);
+    return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(activity);
   } catch (error) {
     console.log(`Error while getting user profile details ${error}`);
 
@@ -466,4 +505,39 @@ exports.getUserActivity = async (req, res) => {
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
       .send(error.message);
   }
-}
+};
+
+/**
+ * Get list of all categories subscribed by an user.
+ * @param  {Object} req request object
+ * @param  {Object} res response object
+ */
+exports.subscribedCategories = async (req, res) => {
+  try {
+    let query,
+      subscribedCategories = [],
+      result,
+      index;
+
+    query =
+      `SELECT name ` +
+      ` FROM subscribed_to ` +
+      ` WHERE user_id = ${req.params.userId};`;
+
+    result = await SQLHelper(query);
+
+    for (index in result) {
+      subscribedCategories.push(result[index].name.toLowerCase());
+    }
+
+    return res
+      .status(constants.STATUS_CODE.SUCCESS_STATUS)
+      .send(subscribedCategories);
+  } catch (error) {
+    console.log(`Error while getting subscribed category details ${error}`);
+
+    return res
+      .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+      .send(error.message);
+  }
+};
