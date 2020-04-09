@@ -14,12 +14,6 @@ class Header extends Component {
                     <a href="/update-account/user">
                         <button class="btn btn-outline-dark">Update my profile</button>
                     </a>
-                    <a href="/view/notifications">
-                        <button class="btn btn-outline-dark">View notifications</button>
-                    </a>
-                    <a href="/view/history">
-                        <button class="btn btn-outline-dark">View history</button>
-                    </a>
                 </div>
 
             ]

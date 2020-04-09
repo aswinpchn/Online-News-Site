@@ -32,57 +32,43 @@ class UserActivityHistory extends Component {
 	render() {
 		const history = this.state.history;
 		return (
-			<div>
+			<div class="bg-white pl-5 pr-5 pb-5">
 				<IsReaderCheck />
-
-				<div class="bg-white pl-5 pr-5 pb-5">
-					<Header />
-					<Navigation />
-					<div className="row">
-						<div className="col-md-6 offset-md-3 p-5 shadow">
-							<h5 className="text-center font-weight-bolder">History</h5>
-							{history.map((activity) => {
-								if (activity.type === 'commented') {
-									return (
-										<p>
-											<i style={{fontSize : '24px'}} class='fas'>&#xf4ad;</i>
-											{' '}
-											You commented on <b>{activity.content}</b> at{' '}
-											<b>{activity.time}</b>
-										</p>
-									);
-								} else if (activity.type === 'liked') {
-									return (
-										<p>
-											<i style={{fontSize : '24px'}} class='fas'>&#xf164;</i>
-											{' '} You liked <b>{activity.content}</b> at{' '}
-											<b>{activity.time}</b>
-										</p>
-									);
-								} else if (activity.type === 'subscribed') {
-									return (
-										<p>
-											You subscribed to <b>{activity.content}</b> at{' '}
-											<b>{activity.time}</b>
-										</p>
-									);
-								} else if (activity.type === 'viewed') {
-									return (
-										<p>
-											<i style={{fontSize : '24px'}} class='fab'>&#xf4d5;</i>
-											{' '}
-											You viewed <b>{activity.content}</b> at{' '}
-											<b>{activity.time}</b>
-										</p>
-									);
-								}
-								return <div></div>;
-							})}
-						</div>
-					</div>
-					<Footer />
+				<Header />
+				<Navigation />
+				<div className="p-5 shadow">
+					<h5 className="text-center font-weight-bolder">History</h5>
+					{history.map((activity) => {
+						let text = "",
+							icon = [],
+							tag = []
+						if (activity.type === 'commented') {
+							text = "You commented on"
+							icon = <i style={{ fontSize: '24px' }} class='fas'>&#xf4ad;</i>
+							tag = <a className="font-weight-bold text-dark" href={`/article/${activity.editor_id}/${activity.article_id}`}>{activity.content}</a>
+						} else if (activity.type === 'liked') {
+							text = "You liked"
+							icon = <i style={{ fontSize: '24px' }} class='fas'>&#xf164;</i>
+							tag = <a className="font-weight-bold text-dark" href={`/article/${activity.editor_id}/${activity.article_id}`}>{activity.content}</a>
+						} else if (activity.type === 'subscribed') {
+							text = "You subscribed to"
+							tag = <a className="font-weight-bold text-dark" href={`/frontpage/${activity.content.toLowerCase()}`}>{activity.content}</a>
+						} else if (activity.type === 'viewed') {
+							text = "You liked"
+							icon = <i style={{ fontSize: '24px' }} class='fab'>&#xf4d5;</i>
+							tag = <a className="font-weight-bold text-dark" href={`/article/${activity.editor_id}/${activity.article_id}`}>{activity.content}</a>
+						}
+						return [
+							<p>
+								{ icon } {' '} { text } {' '} 
+								{ tag }
+								{' '} at {' '}
+								<span className="font-italic">{activity.time}</span>
+							</p>
+						];
+					})}
 				</div>
-
+				<Footer />
 			</div>
 		);
 	}

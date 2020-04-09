@@ -73,8 +73,8 @@ class Home extends Component {
                     <div class="row bg-dark mb-1 text-center font-weight-bold">
                         <div class="col-md-6 p-2 bg-white text-white"></div>
                         {subscribe}
-                        <div class="col-md-2 p-2"><a href="/frontpage/sports" class="text-white">View my activity</a></div>
-                        <div class="col-md-2 p-2"><a href="/frontpage/food" class="text-white">Notifications</a></div>
+                        <div class="col-md-2 p-2"><a href="/view/history" class="text-white">View my activity</a></div>
+                        <div class="col-md-2 p-2"><a href="/view/notifications" class="text-white">Notifications</a></div>
                     </div>
                 )
             }
