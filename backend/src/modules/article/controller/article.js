@@ -244,16 +244,30 @@ exports.getArticle = async (req, res) => {
 			resultArticle.categories = allCategories
 		}
 
+		const viewerId = req.params.viewerId;
+		
+		if(viewerId !== "Editor"){
+			
+			query = `INSERT INTO views (user_id,editor_id,article_id,r_time) VALUES (${viewerId},${req.params.editorId},${ req.params.articleId}, NOW())`
+			var result = await SQLHelper(query)
+			console.log(JSON.stringify(result));
 
-		/*
-		Maintaing readCount seperately, this way, for quickview, we can avoid SQL queries.
-		 */
-		let condition = {
-			articleId: req.params.articleId,
-			editorId: req.params.editorId
-		};
-		let r = await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } }, {new : true});
-		//console.log(r);
+			
+			/*
+			Maintaing readCount seperately, this way, for quickview, we can avoid SQL queries.
+			*/
+			let condition = {
+				articleId: req.params.articleId,
+				editorId: req.params.editorId
+			};
+
+			let r = await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } }, {new : true});
+			resultArticle.readCount ++;
+			//console.log(r);
+		}
+
+
+		
 		
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)

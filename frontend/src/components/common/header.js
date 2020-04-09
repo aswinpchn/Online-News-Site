@@ -1,32 +1,39 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 class Header extends Component {
 
-    render(){
+    render() {
 
         var display;
         if (window.location.pathname === '/login' || window.location.pathname === '/create-account') {
             display = "";
         } else if (localStorage.getItem('226UserType') === "User") {
-            display = [       
+            display = [
                 <div class="col-md-2 pt-4">
-                    <p class="text-break">Hello, { localStorage.getItem('226User') }</p>
+                    <p class="text-break">Hello, {localStorage.getItem('226User')}</p>
                     <a href="/update-account/user">
                         <button class="btn btn-outline-dark">Update my profile</button>
                     </a>
+                    <a href="/view/notifications">
+                        <button class="btn btn-outline-dark">View notifications</button>
+                    </a>
+                    <a href="/view/history">
+                        <button class="btn btn-outline-dark">View history</button>
+                    </a>
                 </div>
+
             ]
-        }  else if (localStorage.getItem('226UserType') === "Editor") {
-            display = [       
+        } else if (localStorage.getItem('226UserType') === "Editor") {
+            display = [
                 <div class="col-md-2 pt-4">
-                    <p class="text-break">Hello, { localStorage.getItem('226User') }</p>
+                    <p class="text-break">Hello, {localStorage.getItem('226User')}</p>
                     <a href="/update-account/editor">
                         <button class="btn btn-outline-dark">Update my profile</button>
                     </a>
                 </div>
             ]
         } else {
-            display = [       
+            display = [
                 <div class="col-md-2 pt-4">
                     <a href="/login">
                         <button class="btn btn-link">Login</button>
@@ -39,13 +46,13 @@ class Header extends Component {
             ]
         }
 
-        return(    
+        return (
             <div>
                 <div class="row">
                     <div class="col-md-10">
                         <h1 class="display-1 text-break font-weight-bolder"><a href="/" class="text-dark text-decoration-none">NEWS</a></h1>
                     </div>
-                    { display }
+                    {display}
                     {/* { loginText } */}
                 </div>
             </div>
