@@ -3,8 +3,6 @@
 import express from 'express'
 let router = express.Router()
 import userController from '../controller/users'
-import validator from '../validator'
-import validation from 'express-validation'
 
 router.get('/dummy', userController.dummy)
 router.post('/signup', userController.createUser)

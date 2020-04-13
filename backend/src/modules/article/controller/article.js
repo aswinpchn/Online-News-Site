@@ -13,16 +13,9 @@ import Article from '../../../models/mongoDB/article'
  * @param  {Object} res response object
  */
 exports.saveArticle = async (req, res) => {
-	let createdArticle
 	var query
 	var articleData = req.body
 	try {
-		// articleData = {
-		// 	editor_id : "1",
-		// 	headlines : "My headline",
-		// 	body : "My Body",
-		// 	categories : ["Politics", "Business"]
-		// }
 		var date = new Date();
 		var article_id 
 		var create_time =  date.toISOString().slice(0, 19).replace('T', ' ');
@@ -51,8 +44,6 @@ exports.saveArticle = async (req, res) => {
 
 		query = "INSERT INTO article (editor_id, article_id , headlines, body, create_time) VALUES ('" + articleData.editor_id + "','"+ article_id +"','" + articleData.headlines + "', '" + articleData.body + "', '" + create_time + "')"
 		var result = await SQLHelper(query)
-		// console.log("Result : " + JSON.stringify(result, null, 2))
-
 		
 		var categories = articleData.categories
 		for(var i =0 ;i < categories.length ; i++){
@@ -103,11 +94,7 @@ exports.modifyArticle = async (req, res) => {
 	var query
 	var articleData =   req.body
 	try {
-		// articleData = {
-		// 	editor_id : "1",
-		//	article_id : "",
-		// 	body : "New  Body",
-		// }
+		
 		var date = new Date();
 		var modified_time =  date.toISOString().slice(0, 19).replace('T', ' ');
 
