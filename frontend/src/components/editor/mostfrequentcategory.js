@@ -12,19 +12,28 @@ class FrequentCategory extends Component {
         super(props);
         this.state = {
             categoryvalue: [],
-            get: true
+            time: new Date().getTime(),
         };
+        this.state.interval = setInterval(() => {
+            this.getFrequentCategory();
+        }, 10000)
 
     }
 
+    componentWillUnmount() {
+        clearInterval(this.state.interval);
+    }
+
     componentDidMount() {
+
         this.getFrequentCategory();
+
     }
 
     getFrequentCategory = () => {
         axios.get(Constants.BACKEND_SERVER.URL + `/analytics/read/category/${localStorage.getItem('226UserId')}`)
             .then((response) => {
-                console.log(response);
+                //console.log(response);
                 this.setState({
                     categoryvalue: response.data.categoryvalue,
                     get: false
@@ -35,9 +44,12 @@ class FrequentCategory extends Component {
     }
 
     componentDidUpdate(prevProps) {
-        if (JSON.stringify(this.prop) !== JSON.stringify(prevProps)) {
+        const counter = new Date().getTime() - this.state.time;
+        if (counter >= 100) {
             this.getFrequentCategory();
+            this.setState({ time: new Date().getTime() });
         }
+
     }
 
     render() {

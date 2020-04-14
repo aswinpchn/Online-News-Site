@@ -7,15 +7,22 @@ var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
+
+
+
 class FrequentArticles extends Component {
     constructor(props) {
         super(props);
         this.state = {
             graph: [],
             mostReadArticle: [],
-            get: true,
         };
-
+        this.state.interval = setInterval(() => {
+            this.getFrequentArticles();
+        }, 10000)
+    }
+    componentWillUnmount() {
+        clearInterval(this.state.interval);
     }
 
     componentDidMount() {
@@ -25,18 +32,16 @@ class FrequentArticles extends Component {
     getFrequentArticles = () => {
         axios.get(Constants.BACKEND_SERVER.URL + `/analytics/read/articles/${localStorage.getItem('226UserId')}`)
             .then((response) => {
-                console.log(response);
+                //console.log(response);
                 this.setState(response.data)
             }).catch((err) => {
                 console.log(err);
             })
     }
 
-    componentDidUpdate(prevProps) {
-        if (JSON.stringify(this.prop) !== JSON.stringify(prevProps)) {
-            this.getFrequentArticles();
-        }
-    }
+
+
+
 
     render() {
         const graph = this.state.graph;
