@@ -3,7 +3,7 @@ import CanvasJSReact from '../common/libs/canvasjs.react';
 import Constants from '../../utils/constants';
 import axios from 'axios';
 //var CanvasJSReact = require('./canvasjs.react');
-var CanvasJS = CanvasJSReact.CanvasJS;
+// var CanvasJS = CanvasJSReact.CanvasJS;
 var CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
 
@@ -44,7 +44,7 @@ class FrequentCategory extends Component {
         const graph = this.state.categoryvalue;
         const options = {
             title: {
-                text: "Most Frequently Read Articles"
+                text: "Most Frequently Read Category"
             },
             width: 600,
             height: 400,

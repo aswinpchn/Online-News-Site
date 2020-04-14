@@ -2,8 +2,6 @@
 
 //import Users from '../../../models/mongoDB/users'
 import constants from '../../../utils/constants'
-import mongoose from 'mongoose'
-import model from '../../../models/sqlDB/index'
 import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword, validatePassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'

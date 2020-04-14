@@ -33,7 +33,7 @@ class Landing extends Component {
         if (this.state.allArticles.length === 0) {
             allHeadlines = [
                 <div className="p-5">
-                    <p className="display-4">Oops! Looks like there are no articles present for this category at the moment</p>
+                    <p className="display-4">Oops! Looks like you have not posted any articles at the moment</p>
                 </div>
             ]
         } else {

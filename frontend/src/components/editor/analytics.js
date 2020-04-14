@@ -18,11 +18,15 @@ class Landing extends Component {
                     <Header />
                     <Navigation />
 
-                    <h1>ANALYTICS</h1>
-
-                    <FrequentArticles />
-                    <FrequentCategory />
-
+                    {/* <h1>ANALYTICS</h1> */}
+                    <div className="row mt-5">
+                        <div className="col-md-6">
+                            <FrequentArticles />
+                        </div>
+                        <div className="col-md-6">
+                            <FrequentCategory />
+                        </div>
+                    </div>
                     <Footer />
                 </div>
             </div>
