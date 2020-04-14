@@ -103,13 +103,21 @@ class Home extends Component {
         axios.get(Constants.BACKEND_SERVER.URL + `/users/profile/${localStorage.getItem('226UserId')}`)
         .then((response) => {
             console.log(response.data)
+
+            let year = response.data.DOB.substr(0, 4);
+            let month = response.data.DOB.substr(5, 2);
+            let date = response.data.DOB.substr(8, 2);
+
             this.setState({
                 name: response.data.name,
                 email: response.data.email,
                 sex: response.data.sex,
-                location: response.data.location
-            })
-        })
+                location: response.data.location,
+                year: Number(year) ,
+                month: Number(month),
+                date: Number(date)
+            });
+        });
     }
 
     IsValueEmpty = (Value) => {
