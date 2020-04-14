@@ -5,6 +5,10 @@ import Navigation from '../common/navigation';
 import IsEditorCheck from '../common/isEditorCheck';
 import FrequentArticles from './mostfrequentarticles'
 import FrequentCategory from './mostfrequentcategory'
+import MostLikedArticles from "./mostlikedarticles";
+import ReadByLocation from './readByLocation';
+import ReadByTimeOfTheDay from './readByTimeOfTheDay';
+import ReadByAgeGroup from './readByAgeGroup';
 
 class Landing extends Component {
 
@@ -18,15 +22,15 @@ class Landing extends Component {
                     <Header />
                     <Navigation />
 
-                    {/* <h1>ANALYTICS</h1> */}
-                    <div className="row mt-5">
-                        <div className="col-md-6">
-                            <FrequentArticles />
-                        </div>
-                        <div className="col-md-6">
-                            <FrequentCategory />
-                        </div>
-                    </div>
+                    <h1>ANALYTICS</h1>
+
+                    {/*<FrequentArticles/>
+                        <FrequentCategory />*/}
+                    <MostLikedArticles />
+                    <ReadByLocation />
+                    <ReadByTimeOfTheDay />
+                    <ReadByAgeGroup />
+
                     <Footer />
                 </div>
             </div>

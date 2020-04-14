@@ -12,10 +12,10 @@ exports.mostLikedArticles = async (req, res) => {
 	try {
 
 		let query = "" +
-		"SELECT article_id, count(DISTINCT user_id) as likeCount " +
+		"SELECT article_id, headlines, count(DISTINCT user_id) as likeCount " +
 		"FROM article NATURAL JOIN likes " +
 		"WHERE editor_id = " + req.params.editorId + " " +
-		"GROUP BY article_id " +
+		"GROUP BY article_id,headlines " +
 		"ORDER BY likeCount DESC " +
 		"LIMIT 10";
 		
@@ -101,7 +101,7 @@ exports.getArticleReadsByAge = async (req, res) => {
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result[0]);
+			.send(result[0][0]);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
 		return res

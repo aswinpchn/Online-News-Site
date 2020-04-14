@@ -55,7 +55,7 @@ class UserActivityHistory extends Component {
 							icon = <i style={{fontSize : '24px'}} class='fas'>&#xf02e;</i>
 							tag = <a className="font-weight-bold text-dark" href={`/frontpage/${activity.content.toLowerCase()}`}>{activity.content}</a>
 						} else if (activity.type === 'viewed') {
-							text = "You liked"
+							text = "You Read"
 							icon = <i style={{ fontSize: '24px' }} class='fab'>&#xf4d5;</i>
 							tag = <a className="font-weight-bold text-dark" href={`/article/${activity.editor_id}/${activity.article_id}`}>{activity.content}</a>
 						}
