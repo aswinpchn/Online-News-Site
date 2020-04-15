@@ -14,15 +14,15 @@ class FrequentCategory extends Component {
             categoryvalue: [],
             time: new Date().getTime(),
         };
-        this.state.interval = setInterval(() => {
-            this.getFrequentCategory();
-        }, 10000)
+        // this.state.interval = setInterval(() => {
+        //     this.getFrequentCategory();
+        // }, 10000)
 
     }
 
-    componentWillUnmount() {
-        clearInterval(this.state.interval);
-    }
+    // componentWillUnmount() {
+    //     clearInterval(this.state.interval);
+    // }
 
     componentDidMount() {
 

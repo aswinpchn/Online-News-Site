@@ -17,13 +17,13 @@ class FrequentArticles extends Component {
             graph: [],
             mostReadArticle: [],
         };
-        this.state.interval = setInterval(() => {
-            this.getFrequentArticles();
-        }, 10000)
+        // this.state.interval = setInterval(() => {
+        //     this.getFrequentArticles();
+        // }, 10000)
     }
-    componentWillUnmount() {
-        clearInterval(this.state.interval);
-    }
+    // componentWillUnmount() {
+    //     clearInterval(this.state.interval);
+    // }
 
     componentDidMount() {
         this.getFrequentArticles();

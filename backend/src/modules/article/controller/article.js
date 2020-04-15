@@ -75,7 +75,7 @@ exports.saveArticle = async (req, res) => {
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
-			.send("Posted Article Successfully")
+			.send(createdArticle)
 	} catch (error) {
 		console.log(`Error while saving article ${error}`)
 		return res

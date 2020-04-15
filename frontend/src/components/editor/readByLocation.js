@@ -18,7 +18,7 @@ class ReadByLocation extends Component {
         this.getData();
     }
 
-    componentDidUpdate(prevProps: Readonly<P>, prevState: Readonly<S>, snapshot: SS) {
+    componentDidUpdate(prevProps, prevState, snapshot) {
         // console.log(prevState);
         // console.log(this.state);
         if(prevState.selectedCategory !== this.state.selectedCategory) {

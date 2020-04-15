@@ -22,14 +22,14 @@ class Landing extends Component {
                     <Header />
                     <Navigation />
 
-                    {/* <div className="row mt-5">
+                    <div className="row mt-5">
                         <div className="col-md-6">
                             <FrequentArticles/>
                         </div>
                         <div className="col-md-6">
                             <FrequentCategory />
                         </div>
-                    </div> */}
+                    </div>
                     <div className="row mt-5">
                         <div className="col-md-6">
                             <MostLikedArticles />
