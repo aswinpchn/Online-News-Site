@@ -95,13 +95,13 @@ exports.getArticleReadsByAge = async (req, res) => {
 		// 	END IF;
 		// END $$
 
-		let query = `CALL getArticleReadsByAge(${req.body.editor_id}, "${req.body.age_bracket}");`;
+		let query = `CALL getArticleReadsByAge(${req.body.editor_id});`;
 		let result = await SQLHelper(query);
 		//console.log(result);
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result[0][0]);
+			.send(result[0]);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
 		return res
@@ -147,14 +147,14 @@ exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
 		// END $$
 		// DELIMITER; $$
 
-		let query = `CALL getArticleReadsByTimeOfTheDay(${req.body.editor_id}, "${req.body.time_of_the_day}");`;
+		let query = `CALL getArticleReadsByTimeOfTheDay(${req.body.editor_id});`;
 
 		let result = await SQLHelper(query);
 		//console.log(result);
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result[0][0]);
+			.send(result[0]);
 
 	} catch(error) {
 		console.log(`Error while getting user profile details ${error}`)
