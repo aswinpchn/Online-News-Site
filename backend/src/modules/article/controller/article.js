@@ -4,7 +4,7 @@
 
 
 import constants from '../../../utils/constants'
-import mongoose from 'mongoose'
+import SQLConnection from '../../../models/sqlDB/index'
 import SQLQueries from '../../../models/sqlDB/articleQueries'
 import SQLHelper from '../../../models/sqlDB/helper'
 import Article from '../../../models/mongoDB/article'
@@ -16,6 +16,8 @@ import Article from '../../../models/mongoDB/article'
  * @param  {Object} res response object
  */
 exports.saveArticle = async (req, res) => {
+	let mongoConnection = await Article.startSession();
+	await SQLConnection.beginTransaction()
 	try {
 		var query
 		var articleData = req.body
@@ -23,7 +25,6 @@ exports.saveArticle = async (req, res) => {
 		var article_id
 		var create_time = date.toISOString().slice(0, 19).replace('T', ' ');
 
-		// query = "SELECT name FROM editor WHERE editor_id = '" + articleData.editor_id + "'"
 		query = SQLQueries.getNamesOfAllEditors(articleData.editor_id)
 		var result = await SQLHelper(query)
 
@@ -34,7 +35,6 @@ exports.saveArticle = async (req, res) => {
 		}
 		const editorName = result[0].name
 
-		// query = "SELECT max(article_id) AS previous_article_no FROM article WHERE editor_id = '" + articleData.editor_id +"'"
 		query = SQLQueries.getPreviousArticleCount(articleData.editor_id)
 		var result = await SQLHelper(query)
 		if (result.length > 0) {
@@ -45,22 +45,18 @@ exports.saveArticle = async (req, res) => {
 			}
 		}
 
-		// query = "INSERT INTO article (editor_id, article_id , headlines, body, create_time) VALUES ('" + articleData.editor_id + "','"+ article_id +"','" + articleData.headlines + "', '" + articleData.body + "', '" + create_time + "')"
 		query = SQLQueries.addArticle(articleData.editor_id, article_id, articleData.headlines, articleData.body, create_time)
-		var result = await SQLHelper(query)
-
+		await SQLConnection.query(query)
 		var categories = articleData.categories
 		for (var i = 0; i < categories.length; i++) {
-			// query = "INSERT INTO belongs_to VALUES ('" + articleData.editor_id + "','"+ article_id + "','"+ categories[i] + "')"
 			query = SQLQueries.saveBelongsTo(articleData.editor_id, article_id, categories[i])
-			var result = await SQLHelper(query)
-			// console.log("Result : " + JSON.stringify(result, null, 2))	
+			await SQLConnection.query(query)
 		}
-
 
 		/*
 		Creating a new article document in Article collection.
 		 */
+		mongoConnection.startTransaction();
 		let newArticle = new Article({
 			articleId: article_id,
 			editorId: articleData.editor_id,
@@ -74,15 +70,19 @@ exports.saveArticle = async (req, res) => {
 		});
 
 		let createdArticle = await newArticle.save();
-		// console.log(createdArticle);
-
-
-
+		await mongoConnection.commitTransaction();
+		await mongoConnection.endSession();
+		await SQLConnection.commit()
+		await SQLConnection.end()
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(createdArticle)
 	} catch (error) {
 		console.log(`Error while saving article ${error}`)
+		await mongoConnection.abortTransaction();
+		await mongoConnection.endSession();
+		await SQLConnection.rollback()
+		await SQLConnection.end()
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -102,7 +102,6 @@ exports.modifyArticle = async (req, res) => {
 		var date = new Date();
 		var modified_time = date.toISOString().slice(0, 19).replace('T', ' ');
 
-		// query = "SELECT name FROM editor WHERE editor_id = '" + articleData.editor_id + "'"
 		query = SQLQueries.getNamesOfAllEditors(articleData.editor_id)
 		var result = await SQLHelper(query)
 
@@ -112,7 +111,6 @@ exports.modifyArticle = async (req, res) => {
 				.send(constants.MESSAGES.EDITOR_DOES_NOT_EXIST)
 		}
 
-		// query = "UPDATE article SET body='" +articleData.body + "', modified_time='" + modified_time + "' WHERE article_id ='" + articleData.article_id +"' AND editor_id ='" + articleData.editor_id +"'"
 		query = SQLQueries.updateArticle(articleData.body, modified_time, articleData.article_id, articleData.editor_id)
 		var result = await SQLHelper(query)
 
@@ -134,7 +132,6 @@ exports.modifyArticle = async (req, res) => {
  */
 exports.getHeadlines = async (req, res) => {
 	try {
-
 		var query
 		var type = req.query.type
 		if (type.toLowerCase() == 'all') {
@@ -143,7 +140,6 @@ exports.getHeadlines = async (req, res) => {
 				.status(constants.STATUS_CODE.SUCCESS_STATUS)
 				.send(result.reverse())
 		} else {
-			// query = "SELECT name FROM category WHERE name='" + type +"'"
 			query = SQLQueries.getAllCategoryNames(type)
 			var exists = await SQLHelper(query)
 			if (exists.length <= 0) {
@@ -153,9 +149,6 @@ exports.getHeadlines = async (req, res) => {
 					.send("Invalid option : " + type)
 			}
 
-			// query = `SELECT article_id, editor_id ` +
-			// 		`FROM belongs_to `+
-			// 		`WHERE name = "${type}"` ;
 			query = SQLQueries.getBelongingArticles(type)
 			var result = await SQLHelper(query)
 			let allHeadlines = []
@@ -190,15 +183,9 @@ exports.getHeadlines = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getArticle = async (req, res) => {
-
-	var query
-	var resultArticle = {}
 	try {
-
-		// query = "SELECT name, headlines, body, create_time, modified_time " +
-		// 		"FROM article NATURAL JOIN editor " +
-		// 		"WHERE article_id ='" + req.params.articleId + "' AND editor_id ='" + req.params.editorId +"'"
-		query = SQLQueries.getArticle(req.params.articleId, req.params.editorId)
+		var resultArticle = {}
+		var query = SQLQueries.getArticle(req.params.articleId, req.params.editorId)
 		var article = await SQLHelper(query)
 		if (article.length <= 0) {
 			return res
@@ -213,18 +200,13 @@ exports.getArticle = async (req, res) => {
 			} else {
 				resultArticle.lastModified = article[0].create_time
 			}
-
 			let mQ = await Article.findOne({ articleId: req.params.articleId, editorId: req.params.editorId });
-			//console.log(mQ);
 			resultArticle.likeCount = mQ.likeCount;
 			resultArticle.commentCount = mQ.commentCount;
 			resultArticle.readCount = mQ.readCount;
 			resultArticle.comments = mQ.comments;
 		}
 
-		// query = "SELECT name " + 
-		// 		"FROM belongs_to " +
-		// 		"WHERE article_id ='" + req.params.articleId + "' AND editor_id ='" + req.params.editorId +"'"
 		query = SQLQueries.getBelongsTO(req.params.articleId, req.params.editorId)
 		var categories = await SQLHelper(query)
 		if (categories.length <= 0) {
@@ -242,12 +224,9 @@ exports.getArticle = async (req, res) => {
 		const viewerId = req.params.viewerId;
 
 		if (viewerId !== "Editor") {
-
-			// query = `INSERT INTO views (user_id,editor_id,article_id,r_time) VALUES (${viewerId},${req.params.editorId},${ req.params.articleId}, NOW())`
 			query = SQLQueries.updateViews(viewerId, req.params.editorId, req.params.articleId);
 			var result = await SQLHelper(query)
 			console.log(JSON.stringify(result));
-
 
 			/*
 			Maintaing readCount seperately, this way, for quickview, we can avoid SQL queries.
@@ -257,9 +236,8 @@ exports.getArticle = async (req, res) => {
 				editorId: req.params.editorId
 			};
 
-			let r = await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } }, { new: true });
+			await Article.findOneAndUpdate(condition, { $inc: { readCount: 1 } }, { new: true });
 			resultArticle.readCount++;
-			//console.log(r);
 		}
 
 		return res
@@ -283,7 +261,6 @@ exports.getArticle = async (req, res) => {
 exports.getAllCategories = async (req, res) => {
 
 	try {
-		// let query ="SELECT name FROM category";
 		let query = SQLQueries.getAllCategories();
 		var categories = await SQLHelper(query)
 		if (categories.length <= 0) {
@@ -305,7 +282,6 @@ exports.getAllCategories = async (req, res) => {
 
 exports.getLikeStatus = async (req, res) => {
 	try {
-		// let query = `SELECT * FROM likes WHERE user_id=${req.params.userId} and article_id=${req.params.articleId} and editor_id=${req.params.editorId}`;
 		let query = SQLQueries.getLikes(req.params.userId, req.params.articleId, req.params.editorId)
 		let result = await SQLHelper(query);
 		let likeStatus = {};

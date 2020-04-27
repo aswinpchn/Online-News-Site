@@ -1,6 +1,6 @@
 // SJSU CMPE 226 Fall 2019 TEAM1
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import Navigation from '../common/navigation';
@@ -21,17 +21,17 @@ class Landing extends Component {
         }
         this.selectedCategory = [];
     }
-    
+
     componentDidMount() {
         axios.get(Constants.BACKEND_SERVER.URL + "/article/category/list")
-        .then((response) => {
-            this.setState({
-                categories: response.data
+            .then((response) => {
+                this.setState({
+                    categories: response.data
+                })
             })
-        })
-        .catch(() => {
-            console.log("ERROR")
-        })
+            .catch(() => {
+                console.log("ERROR")
+            })
     }
 
     headlinesChangeHandler = (e) => {
@@ -65,11 +65,11 @@ class Landing extends Component {
 
     postArticle = (e) => {
         e.preventDefault();
-		const articleData = {
-			editor_id : localStorage.getItem('226UserId'),
-			headlines : this.state.headlines,
-			body : this.state.body,
-			categories : this.selectedCategory
+        const articleData = {
+            editor_id: localStorage.getItem('226UserId'),
+            headlines: this.state.headlines,
+            body: this.state.body,
+            categories: this.selectedCategory
         }
         if (this.IsValueEmpty(articleData.headlines) || this.IsValueEmpty(articleData.body)) {
             this.setState({
@@ -83,49 +83,58 @@ class Landing extends Component {
             })
         } else {
             axios.post(Constants.BACKEND_SERVER.URL + "/article/savearticle", articleData)
-            this.setState({
-                headlines: "",
-                body: "",
-                errMsg: "",
-                successMsg: "Article posted successfully"
-            })
+                .then(() => {
+                    this.setState({
+                        headlines: "",
+                        body: "",
+                        errMsg: "",
+                        successMsg: "Article posted successfully"
+                    })
+                })
+                .catch(() => {
+                    this.setState({
+                        errMsg: "Error occured",
+                        successMsg: ""
+                    })
+                })
+
         }
     }
 
-    render(){
+    render() {
 
         let categories = []
         for (var index in this.state.categories) {
-            
+
             categories.push(
                 <div class="form-check form-check-inline">
-                    <input class="form-check-input" onClick = { this.categoryChangeHandler } type="checkbox" id={ "category" + index } value={ this.state.categories[index].name } />
-                    <label class="form-check-label" for={ "category" + index }>{ this.state.categories[index].name }</label>
+                    <input class="form-check-input" onClick={this.categoryChangeHandler} type="checkbox" id={"category" + index} value={this.state.categories[index].name} />
+                    <label class="form-check-label" for={"category" + index}>{this.state.categories[index].name}</label>
                 </div>
             );
         }
-        
-        return(
+
+        return (
             <div>
                 <IsEditorCheck />
                 {/* <!-- Card with information --> */}
                 <div class="bg-white pl-5 pr-5 pb-5">
                     <Header />
                     <Navigation />
-                        <div class="pt-3">
-                            <h4 class="font-weight-light">Headline</h4>
-                            <textarea class="form-control" style = {{ resize : 'none' }} value={ this.state.headlines } onChange={ this.headlinesChangeHandler }/>
+                    <div class="pt-3">
+                        <h4 class="font-weight-light">Headline</h4>
+                        <textarea class="form-control" style={{ resize: 'none' }} value={this.state.headlines} onChange={this.headlinesChangeHandler} />
 
-                            <h4 class="font-weight-light">Body</h4>
-                            <textarea class="form-control" rows="10" style = {{ resize : 'none' }} value={ this.state.body } onChange={ this.bodyChangeHandler }/>
+                        <h4 class="font-weight-light">Body</h4>
+                        <textarea class="form-control" rows="10" style={{ resize: 'none' }} value={this.state.body} onChange={this.bodyChangeHandler} />
 
-                            <h4 class="font-weight-light">Categories</h4> { categories }
+                        <h4 class="font-weight-light">Categories</h4> {categories}
 
-                            <p class="text-danger text-center">{ this.state.errMsg }</p>
-                            <p class="text-success text-center">{ this.state.successMsg }</p>
+                        <p class="text-danger text-center">{this.state.errMsg}</p>
+                        <p class="text-success text-center">{this.state.successMsg}</p>
 
-                            <button class="btn btn-primary text-white w-100 mt-3 font-weight-bold" onClick={ this.postArticle }>Post article</button>
-                        </div>
+                        <button class="btn btn-primary text-white w-100 mt-3 font-weight-bold" onClick={this.postArticle}>Post article</button>
+                    </div>
 
                     <Footer />
                 </div>

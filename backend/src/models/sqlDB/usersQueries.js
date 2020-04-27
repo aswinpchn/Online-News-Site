@@ -9,7 +9,7 @@ exports.loginUser = (email) => {
 }
 
 exports.loginEditor = (email) => {
-    let query = "SELECT editor_id as user_id, name, password from editor where email = '" + loginData.email + "'"
+    let query = "SELECT editor_id as user_id, name, password from editor where email = '" + email + "'"
     return query
 }
 
