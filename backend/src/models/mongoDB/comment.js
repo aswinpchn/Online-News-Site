@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 import mongoose from 'mongoose';
 
 const schema = new mongoose.Schema({

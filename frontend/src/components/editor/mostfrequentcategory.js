@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 import React, { Component } from 'react';
 import CanvasJSReact from '../common/libs/canvasjs.react';
 import Constants from '../../utils/constants';

@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 import React, { Component } from 'react';
 import { Route } from 'react-router-dom';
 import Root from './root/root';

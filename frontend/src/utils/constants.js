@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 module.exports = {
 	BACKEND_SERVER: {
         URL: 'http://localhost:9000', // Should have http://

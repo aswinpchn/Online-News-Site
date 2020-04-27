@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 `use strict`
 
 import SQLHelper from '../models/sqlDB/helper'

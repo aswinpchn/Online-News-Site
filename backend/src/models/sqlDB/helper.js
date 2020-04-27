@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 import con from './index'
 
 const dbCall = (query) => {

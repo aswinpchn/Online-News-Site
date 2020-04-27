@@ -1,10 +1,9 @@
 {
-  "name": "NewsPaper",
+  "name": "newspaper",
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "./node_modules/.bin/nodemon index.js",
-    "test": "./node_modules/.bin/mocha --require babel-register --require babel-polyfill"
+    "start": "./node_modules/.bin/nodemon index.js"
   },
   "dependencies": {
     "aws-sdk": "^2.578.0",

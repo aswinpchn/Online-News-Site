@@ -1,3 +1,5 @@
+// SJSU CMPE 226 Fall 2019 TEAM1
+
 import React from 'react';
 import ReactDOM from 'react-dom';
 // import './index.css';
