@@ -3,6 +3,7 @@
 'use strict'
 
 import constants from '../../../utils/constants'
+import SQLQueries from '../../../models/sqlDB/editorQueries'
 import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'
@@ -14,11 +15,10 @@ import { isUniqueEmail } from '../../../utils/validateEmail'
  * @param  {Object} res response object
  */
 exports.createEditor = async (req, res) => {
-	let createdUser
-	var query
-	var userData = req.body
 	try {
-		
+		let createdUser
+		var query
+		var userData = req.body
 		if (!isUniqueEmail(userData.email)) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
@@ -26,7 +26,8 @@ exports.createEditor = async (req, res) => {
 		}
 
 		userData.password = EncryptPassword(userData.password)
-		query = "INSERT INTO editor (name, email, password) VALUES ('" + userData.name + "', '" + userData.email + "', '" + userData.password + "')"
+		// query = "INSERT INTO editor (name, email, password) VALUES ('" + userData.name + "', '" + userData.email + "', '" + userData.password + "')"
+		query = SQLQueries.createEditor(userData.name, userData.email, userData.password)
 		await SQLHelper(query)
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
@@ -45,9 +46,10 @@ exports.createEditor = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getEditorProfile = async (req, res) => {
-	var query
 	try {
-		query = "SELECT email, name FROM editor WHERE editor_id = '" + req.params.editorId + "'"
+		var query
+		// query = "SELECT email, name FROM editor WHERE editor_id = '" + req.params.editorId + "'"
+		query = SQLQueries.getEditorProfile(req.params.editorId)
 		let details = await SQLHelper(query)
 
 		if (details.length > 0) {
@@ -78,7 +80,8 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
 		}
 		
-		var query = "SELECT user_id from user where email = '" + req.body.email + "'"
+		// var query = "SELECT user_id from user where email = '" + req.body.email + "'"
+		var query = SQLQueries.getEditorIdByEmail(req.body.email)
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -86,7 +89,8 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 		
-		query = "SELECT editor_id from editor where email = '" + req.body.email + "' and editor_id != '" + req.body.editorId + "'"
+		// query = "SELECT editor_id from editor where email = '" + req.body.email + "' and editor_id != '" + req.body.editorId + "'"
+		query = SQLQueries.checkDuplicateEmail(req.body.email, req.body.editorId)
 		var result = await SQLHelper(query)
 		if(result.length > 0) {
 			return res
@@ -100,9 +104,11 @@ exports.updateEditorProfile = async (req, res) => {
 		// updating with or without password
 		if(req.body.password) {
 			editorObj.password = EncryptPassword(req.body.password)
-			query = `UPDATE editor SET email = "${editorObj.email}", password = "${editorObj.password}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
+			// query = `UPDATE editor SET email = "${editorObj.email}", password = "${editorObj.password}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
+			query = SQLQueries.updateWithPassword(editorObj.email, editorObj.name, editorObj.editorId, editorObj.password)
 		} else {	
-			query = `UPDATE editor SET email = "${editorObj.email}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
+			// query = `UPDATE editor SET email = "${editorObj.email}", name = "${editorObj.name}" WHERE editor_id = ${ editorObj.editorId }`
+			query = SQLQueries.updateWithoutPassword(editorObj.email, editorObj.name, editorObj.editorId)
 		}
 
 		await SQLHelper(query)
