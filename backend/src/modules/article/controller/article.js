@@ -25,7 +25,7 @@ exports.saveArticle = async (req, res) => {
 		var article_id
 		var create_time = date.toISOString().slice(0, 19).replace('T', ' ');
 
-		query = SQLQueries.getNamesOfAllEditors(articleData.editor_id)
+		query = SQLQueries.getNameOfEditor(articleData.editor_id)
 		var result = await SQLHelper(query)
 
 		if (result.length <= 0) {
@@ -102,7 +102,7 @@ exports.modifyArticle = async (req, res) => {
 		var date = new Date();
 		var modified_time = date.toISOString().slice(0, 19).replace('T', ' ');
 
-		query = SQLQueries.getNamesOfAllEditors(articleData.editor_id)
+		query = SQLQueries.getNameOfEditor(articleData.editor_id)
 		var result = await SQLHelper(query)
 
 		if (result.length <= 0) {

@@ -1,22 +1,27 @@
+// This query will store user information in the database
 exports.createUser = (name, DOB, location, sex, email, password) => {
     let query = "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" + name + "', '" + DOB + "', '" + location + "', '" + sex + "', '" + email + "', '" + password + "')"
     return query
 }
 
+// This query will retreive user_id, name and password for user with the given email
 exports.loginUser = (email) => {
     let query = "SELECT user_id, name, password from user where email = '" + email + "'"
     return query
 }
 
+// This query will retreive editor_id, name and password for editor with the given email
 exports.loginEditor = (email) => {
     let query = "SELECT editor_id as user_id, name, password from editor where email = '" + email + "'"
     return query
 }
 
+// This query will retreive all user details for a given ID
 exports.getUserDetails = (userId) => {
     let query = "SELECT email, name, sex, DOB, location from user where user_id = '" + userId + "'"
     return query
 }
+
 
 exports.getUserId = (email, userId) => {
     var query = "SELECT user_id from user where email = '" + email + "' and user_id != '" + userId + "'"
@@ -38,6 +43,10 @@ exports.updateUserWithoutPassword = (email, name, sex, DOB, location, userId) =>
     return query
 }
 
+// This query will retreive name, editor_id, article_id, headlines, time and status for all newly posted articles in the category a user has subscribed to,
+// and the same information for all articles that has been modified in the category a user has subscribed to,
+// and finally same information for any comments that has been done on an article where the user has already commented
+// All of these records are sorted by timestamp in descending order i.e Latest notification first 
 exports.getNotifications = (userId) => {
     let query = "( " +
         "SELECT NULL as name, A.editor_id as editor_id, A.article_id as article_id, A.headlines as headlines, A.create_time as time, 'NEW' as status " +
@@ -77,6 +86,7 @@ exports.getNotifications = (userId) => {
     return query
 }
 
+// This query will add a record of user liking an article
 exports.addLikes = (user_id, article_id, editor_id) => {
     let query = `INSERT INTO` +
         ` likes (user_id, article_id, editor_id, l_time)` +
@@ -84,6 +94,7 @@ exports.addLikes = (user_id, article_id, editor_id) => {
     return query;
 }
 
+// This query will add a record of user commenting an article
 exports.commentOnArticle = (user_id, article_id, editor_id, text) => {
     let query = `INSERT INTO` +
         ` comments (user_id, article_id, editor_id, text, c_time)` +
@@ -91,6 +102,7 @@ exports.commentOnArticle = (user_id, article_id, editor_id, text) => {
     return query
 }
 
+// This query will add a record of user subscribing to a category
 exports.subscribeToACategory = (user_id, category_name) => {
     let query = `INSERT INTO` +
         ` subscribed_to (user_id, name, s_time)` +
@@ -98,6 +110,7 @@ exports.subscribeToACategory = (user_id, category_name) => {
     return query;
 }
 
+// This query will fetch the article details of all the articles viewed by a particular user
 exports.getViews = (userId) => {
     let query = `SELECT A.article_id, A.editor_id, A.headlines content,  r_time time, 'viewed' as type` +
         ` FROM views V, article A` +
@@ -105,6 +118,7 @@ exports.getViews = (userId) => {
     return query;
 }
 
+// This query will fetch the article details of all the articles liked by a particular user
 exports.getLikes = (userId) => {
     let query = `SELECT A.article_id, A.editor_id, A.headlines content, l_time time, 'liked' as type ` +
         ` FROM likes L, article A` +
@@ -112,6 +126,7 @@ exports.getLikes = (userId) => {
     return query;
 }
 
+// This query will fetch the category details of all the articles in a particular user
 exports.getSubscribes = (userId) => {
     let query = `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
         ` FROM subscribed_to S, category C` +
@@ -119,6 +134,7 @@ exports.getSubscribes = (userId) => {
     return query;
 }
 
+// This query will fetch names of all categories a user has subscribed to
 exports.getSubscribedTo = (userId) => {
     let query = `SELECT name ` +
         ` FROM subscribed_to ` +

@@ -1,12 +1,15 @@
+// This query will store editor details in the database
 exports.createEditor = (name, email, password) => {
     let query = "INSERT INTO editor (name, email, password) VALUES ('" + name + "', '" + email + "', '" + password + "')"
     return query
 }
 
+// This query will retreive editor details based on their ID
 exports.getEditorProfile = (editorId) => {
     let query = "SELECT email, name FROM editor WHERE editor_id = '" + editorId + "'"
     return query
 }
+
 
 exports.getEditorIdByEmail = (email) => {
     let query = "SELECT user_id from user where email = '" + email + "'"
