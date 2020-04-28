@@ -140,9 +140,9 @@ exports.getHeadlines = async (req, res) => {
 				.status(constants.STATUS_CODE.SUCCESS_STATUS)
 				.send(result.reverse())
 		} else {
-			query = SQLQueries.getAllCategoryNames(type)
+			query = SQLQueries.isValidCategoryName(type)
 			var exists = await SQLHelper(query)
-			if (exists.length <= 0) {
+			if (exists[0][0].TRUE) {
 				console.log("Invalid option")
 				return res
 					.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
@@ -282,10 +282,10 @@ exports.getAllCategories = async (req, res) => {
 
 exports.getLikeStatus = async (req, res) => {
 	try {
-		let query = SQLQueries.getLikes(req.params.userId, req.params.articleId, req.params.editorId)
+		let query = SQLQueries.hasUserLikedTheArticle(req.params.userId, req.params.articleId, req.params.editorId)
 		let result = await SQLHelper(query);
 		let likeStatus = {};
-		if (JSON.parse(JSON.stringify(result)).length > 0) {
+		if (result[0][0].TRUE) {
 			likeStatus.status = true;
 		}
 		else {

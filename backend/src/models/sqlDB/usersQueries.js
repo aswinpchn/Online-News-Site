@@ -22,24 +22,26 @@ exports.getUserDetails = (userId) => {
     return query
 }
 
-
-exports.getUserId = (email, userId) => {
-    var query = "SELECT user_id from user where email = '" + email + "' and user_id != '" + userId + "'"
+// This stored procedure will check if the email id already exists for user other than their userId and return true or false
+exports.checkDuplicateEmailForUser = (email, userId) => {
+    let query = `CALL checkDuplicateEmailForUser("${email}", ${userId})`
     return query
 }
 
-exports.getEditorId = (email) => {
-    let query = "SELECT editor_id from editor where email = '" + email + "'"
+// This stored procedure will check if the email id already exists for an editor and return true or false
+exports.doesEmailExistForEditor = (email) => {
+    let query = `CALL doesEmailExistForEditor("${email}")`
     return query
 }
 
-exports.updateUserWithPassword = (email, password, name, sex, DOB, location, userId) => {
-    let query = `UPDATE user SET email = "${email}", password = "${password}", name = "${name}", sex = "${sex}", DOB = "${DOB}", location = "${location}" WHERE user_id = ${userId}`
-    return query
-}
-
-exports.updateUserWithoutPassword = (email, name, sex, DOB, location, userId) => {
-    let query = `UPDATE user SET email = "${email}", name = "${name}", sex = "${sex}", DOB = "${DOB}", location = "${location}" WHERE user_id = ${userId}`
+// This stored procedure updates the user information which has been provided by the user
+exports.updateUserInformation = (email, password, name, sex, DOB, location, userId) => {
+    let query
+    if (password) {
+        query = `CALL updateUserInformation("${email}", "${password}", "${name}", "${sex}", "${DOB}", "${location}", ${userId})`
+    } else {
+        query = `CALL updateUserInformation("${email}", ${password}, "${name}", "${sex}", "${DOB}", "${location}", ${userId})`
+    }
     return query
 }
 

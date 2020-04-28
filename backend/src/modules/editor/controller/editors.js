@@ -77,17 +77,17 @@ exports.updateEditorProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
 		}
 		
-		var query = SQLQueries.getEditorIdByEmail(req.body.email)
+		var query = SQLQueries.doesEmailExistForUser(req.body.email)
 		var result = await SQLHelper(query)
-		if(result.length > 0) {
+		if(result[0][0].TRUE) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 		
-		query = SQLQueries.checkDuplicateEmail(req.body.email, req.body.editorId)
+		query = SQLQueries.checkDuplicateEmailForEditor(req.body.email, req.body.editorId)
 		var result = await SQLHelper(query)
-		if(result.length > 0) {
+		if(result[0][0].TRUE) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -99,11 +99,8 @@ exports.updateEditorProfile = async (req, res) => {
 		// updating with or without password
 		if(req.body.password) {
 			editorObj.password = EncryptPassword(req.body.password)
-			query = SQLQueries.updateWithPassword(editorObj.email, editorObj.name, editorObj.editorId, editorObj.password)
-		} else {	
-			query = SQLQueries.updateWithoutPassword(editorObj.email, editorObj.name, editorObj.editorId)
 		}
-
+		SQLQueries.updateEditorInformation(editorObj.email, editorObj.name, editorObj.editorId, editorObj.password)
 		await SQLHelper(query)
 		return res.status(200).json()
 	} catch (error) {

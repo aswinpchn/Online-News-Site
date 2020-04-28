@@ -10,23 +10,23 @@ exports.getEditorProfile = (editorId) => {
     return query
 }
 
-
-exports.getEditorIdByEmail = (email) => {
-    let query = "SELECT user_id from user where email = '" + email + "'"
+// This stored prodecure checks if the email ID exists for an user
+exports.doesEmailExistForUser = (email) => {
+    let query = `CALL doesEmailExistForUser("${email}")`
     return query
 }
 
-exports.checkDuplicateEmail = (email, editorId) => {
-    let query = "SELECT editor_id from editor where email = '" + email + "' and editor_id != '" + editorId + "'"
+// This stored prodecure checks if the email ID exists for an editor who has an editor Id other than the requestor
+exports.checkDuplicateEmailForEditor = (email, editorId) => {
+    let query = `CALL checkDuplicateEmailForEditor("${email}", ${editorId})`
     return query
 }
 
-exports.updateWithPassword = (email, name, editorId, password) => {
-    let query = `UPDATE editor SET email = "${email}", password = "${password}", name = "${name}" WHERE editor_id = ${editorId}`
-    return query
-}
-
-exports.updateWithoutPassword = (email, name, editorId) => {
-    let query = `UPDATE editor SET email = "${email}", name = "${name}" WHERE editor_id = ${editorId}`
+// This stored prodecure updates the editor information which has been provided by the editor
+exports.updateEditorInformation = (email, name, editorId, password) => {
+    let query = `CALL updateEditorInformation("${email}", "${name}", ${editorId}, ${password})`
+    if (password) {
+        query = `CALL updateEditorInformation("${email}", "${name}", ${editorId}, "${password}")`
+    }
     return query
 }

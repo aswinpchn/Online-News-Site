@@ -28,9 +28,9 @@ exports.updateArticle = (body, modified_time, article_id, editor_id) => {
     return query
 }
 
-// This query will retreive the names of all 
-exports.getAllCategoryNames = (type) => {
-    let query = "SELECT name FROM category WHERE name='" + type + "'"
+// This stored procedure checks if the given category name is valid
+exports.isValidCategoryName = (name) => {
+    let query = `CALL isValidCategoryName("${name}")`
     return query
 }
 
@@ -73,5 +73,11 @@ exports.getAllCategories = () => {
 // This query will get the record of the like done by a user on a particular article 
 exports.getLikes = (userId, articleId, editorId) => {
     let query = `SELECT * FROM likes WHERE user_id=${userId} and article_id=${articleId} and editor_id=${editorId}`;
+    return query
+}
+
+// This stored procedure checks if the user has already liked the article previously
+exports.hasUserLikedTheArticle = (userId, articleId, editorId) => {
+    let query = `CALL hasUserLikedTheArticle(${userId}, ${articleId}, ${editorId})`
     return query
 }

@@ -29,7 +29,7 @@ exports.createUser = async (req, res) => {
 		let createdUser
 		var query
 		var userData = req.body
-		if (!isUniqueEmail(userData.email)) {
+		if (await isUniqueEmail(userData.email) === false) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -138,9 +138,10 @@ exports.updateUserProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
 		}
 
-		var query = SQLQueries.getUserId(req.body.email, req.body.userId)
+		// var query = SQLQueries.getUserId(req.body.email, req.body.userId)
+		var query = SQLQueries.checkDuplicateEmailForUser(req.body.email, req.body.userId)
 		var result = await SQLHelper(query)
-		if (result.length > 0) {
+		if (result[0][0].TRUE) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -148,7 +149,7 @@ exports.updateUserProfile = async (req, res) => {
 
 		query = SQLQueries.getEditorId(req.body.email)
 		var result = await SQLHelper(query)
-		if (result.length > 0) {
+		if (result[0][0].TRUE) {
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -160,11 +161,8 @@ exports.updateUserProfile = async (req, res) => {
 		// updating with or without password
 		if (req.body.password) {
 			userObj.password = EncryptPassword(req.body.password)
-			query = SQLQueries.updateUserWithPassword(userObj.email, userObj.password, userObj.name, userObj.sex, userObj.DOB, userObj.location, userObj.userId)
-		} else {
-			query = SQLQueries.updateUserWithPassword(userObj.email, userObj.name, userObj.sex, userObj.DOB, userObj.location, userObj.userId)
 		}
-
+		query = SQLQueries.updateUserInformation(userObj.email, userObj.password, userObj.name, userObj.sex, userObj.DOB, userObj.location, userObj.userId)
 		await SQLHelper(query)
 		return res.status(200).json()
 	} catch (error) {
