@@ -5,6 +5,7 @@
 import constants from '../../../utils/constants'
 import SQLHelper from '../../../models/sqlDB/helper'
 import SQLQueries from '../../../models/sqlDB/analyticsQueries'
+import logger from '../../../../config/logger';
 
 /**
  * Most liked articles.
@@ -12,15 +13,20 @@ import SQLQueries from '../../../models/sqlDB/analyticsQueries'
  * @param  {Object} res response object
  */
 exports.mostLikedArticles = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+  try {
 
 		let query = SQLQueries.mostLikedArticles(req.params.editorId)
 		let result = await SQLHelper(query)
-		return res
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result));
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(result)
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -33,15 +39,22 @@ exports.mostLikedArticles = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.categoryReadByLocation = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+
+  try {
 		
 		let query = SQLQueries.categoryReadByLocation(req.params.category, req.params.editorId)
 		let result = await SQLHelper(query)
-		return res
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(result)
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -49,7 +62,9 @@ exports.categoryReadByLocation = async (req, res) => {
 }
 
 exports.getArticleReadsByAge = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+
+  try {
 		// let condition;
 		// if(req.body.age_bracket == "0-18")
 		// 	condition = '(YEAR(NOW()) - YEAR(U.DOB)) < 18';
@@ -87,11 +102,15 @@ exports.getArticleReadsByAge = async (req, res) => {
 		let query = `CALL getArticleReadsByAge(${req.body.editor_id});`;
 		let result = await SQLHelper(query);
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(result[0]);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -100,7 +119,8 @@ exports.getArticleReadsByAge = async (req, res) => {
 
 
 exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+  try {
 
 		// let condition;
 		// if(req.body.time_of_the_day == "10PM-6AM")
@@ -137,12 +157,16 @@ exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
 
 		let result = await SQLHelper(query);
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(result[0]);
 
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -151,7 +175,9 @@ exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
 
 
 exports.getMostFrequentlyReadArticles = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+
+  try {
 		var editor_id = req.params.editorId
 		var response = {}
 		var query = SQLQueries.getGraphValues(editor_id)
@@ -172,12 +198,15 @@ exports.getMostFrequentlyReadArticles = async (req, res) => {
 		} else {
 			response.message = constants.MESSAGES.NO_ARTICLE_PRESENT
 		}
-		
-		return res
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(response));
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(response);
 	} catch (error) {
 		console.log(`Error while getting most frquently read article ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -186,7 +215,9 @@ exports.getMostFrequentlyReadArticles = async (req, res) => {
 
 
 exports.getMostFrequentlyReadCategories = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+
+  try {
 		var editor_id = req.params.editorId
 		var response = {}
 		var query = SQLQueries.getMostReadCategory(editor_id)
@@ -201,11 +232,15 @@ exports.getMostFrequentlyReadCategories = async (req, res) => {
 			response.message = constants.MESSAGES.NO_CATEGORY_PRESENT
 		}
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(response));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(response);
 	} catch (error) {
 		console.log(`Error while getting most frquently read article ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);

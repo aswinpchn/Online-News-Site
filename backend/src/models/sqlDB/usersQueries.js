@@ -1,36 +1,50 @@
+import logger from '../../../config/logger';
+
 // This query will store user information in the database
 exports.createUser = (name, DOB, location, sex, email, password) => {
     let query = "INSERT INTO user (name, DOB, location, sex, email, password) VALUES ('" + name + "', '" + DOB + "', '" + location + "', '" + sex + "', '" + email + "', '" + password + "')"
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This query will retreive user_id, name and password for user with the given email
 exports.loginUser = (email) => {
     let query = "SELECT user_id, name, password from user where email = '" + email + "'"
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This query will retreive editor_id, name and password for editor with the given email
 exports.loginEditor = (email) => {
     let query = "SELECT editor_id as user_id, name, password from editor where email = '" + email + "'"
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This query will retreive all user details for a given ID
 exports.getUserDetails = (userId) => {
     let query = "SELECT email, name, sex, DOB, location from user where user_id = '" + userId + "'"
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This stored procedure will check if the email id already exists for user other than their userId and return true or false
 exports.checkDuplicateEmailForUser = (email, userId) => {
     let query = `CALL checkDuplicateEmailForUser("${email}", ${userId})`
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This stored procedure will check if the email id already exists for an editor and return true or false
 exports.doesEmailExistForEditor = (email) => {
     let query = `CALL doesEmailExistForEditor("${email}")`
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
@@ -42,6 +56,8 @@ exports.updateUserInformation = (email, password, name, sex, DOB, location, user
     } else {
         query = `CALL updateUserInformation("${email}", ${password}, "${name}", "${sex}", "${DOB}", "${location}", ${userId})`
     }
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
@@ -85,6 +101,8 @@ exports.getNotifications = (userId) => {
         "WHERE user_id != " + userId + " AND mintime <= c_time " +
         ") " +
         "ORDER BY time desc";
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
@@ -93,6 +111,8 @@ exports.addLikes = (user_id, article_id, editor_id) => {
     let query = `INSERT INTO` +
         ` likes (user_id, article_id, editor_id, l_time)` +
         ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , NOW() );`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -101,6 +121,8 @@ exports.commentOnArticle = (user_id, article_id, editor_id, text) => {
     let query = `INSERT INTO` +
         ` comments (user_id, article_id, editor_id, text, c_time)` +
         ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , '${text}' , NOW() );`;
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
@@ -109,6 +131,8 @@ exports.subscribeToACategory = (user_id, category_name) => {
     let query = `INSERT INTO` +
         ` subscribed_to (user_id, name, s_time)` +
         ` VALUES ( ${user_id} , '${category_name}' , NOW() );`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -117,6 +141,8 @@ exports.getViews = (userId) => {
     let query = `SELECT A.article_id, A.editor_id, A.headlines content,  r_time time, 'viewed' as type` +
         ` FROM views V, article A` +
         ` WHERE V.user_id = ${userId} and V.article_id = A.article_id and V.editor_id = A.editor_id;`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -125,6 +151,8 @@ exports.getLikes = (userId) => {
     let query = `SELECT A.article_id, A.editor_id, A.headlines content, l_time time, 'liked' as type ` +
         ` FROM likes L, article A` +
         ` WHERE L.user_id = ${userId} and L.article_id = A.article_id and L.editor_id = A.editor_id;`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -133,6 +161,8 @@ exports.getSubscribes = (userId) => {
     let query = `SELECT null as article_id, null as editor_id, C.name content, s_time time, 'subscribed' as type ` +
         ` FROM subscribed_to S, category C` +
         ` WHERE S.user_id = ${userId} and S.name = C.name;`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -141,5 +171,7 @@ exports.getSubscribedTo = (userId) => {
     let query = `SELECT name ` +
         ` FROM subscribed_to ` +
         ` WHERE user_id = ${userId};`;
+
+  logger.info('Executing Query ' + query);
     return query;
 }

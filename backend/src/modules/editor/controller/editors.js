@@ -51,18 +51,24 @@ exports.createEditor = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getEditorProfile = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+  try {
 		var query = SQLQueries.getEditorProfile(req.params.editorId)
 		let details = await SQLHelper(query)
 
 		if (details.length > 0) {
 			details = details[0]
-			return res.status(200).send(details)
+
+      logger.info('Returning from ' + req.originalUrl + ' 200 ' + JSON.stringify(details));
+      return res.status(200).send(details)
 		} else {
+      logger.info('Returning from ' + req.originalUrl + ' 204 ');
 			return res.status(204).json()
 		}
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -75,9 +81,11 @@ exports.getEditorProfile = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.updateEditorProfile = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+  try {
 		
 		if (req.body.email == undefined) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + constants.MESSAGES.USER_VALUES_MISSING);
 			return res
 				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
@@ -86,6 +94,7 @@ exports.updateEditorProfile = async (req, res) => {
 		var query = SQLQueries.doesEmailExistForUser(req.body.email)
 		var result = await SQLHelper(query)
 		if(result[0][0].TRUE) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -94,7 +103,8 @@ exports.updateEditorProfile = async (req, res) => {
 		query = SQLQueries.checkDuplicateEmailForEditor(req.body.email, req.body.editorId)
 		var result = await SQLHelper(query)
 		if(result[0][0].TRUE) {
-			return res
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
+      return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
@@ -108,8 +118,12 @@ exports.updateEditorProfile = async (req, res) => {
 		}
 		SQLQueries.updateEditorInformation(editorObj.email, editorObj.name, editorObj.editorId, editorObj.password)
 		await SQLHelper(query)
-		return res.status(200).json()
+
+    logger.info('Returning from ' + req.originalUrl + ' 200');
+    return res.status(200).json()
 	} catch (error) {
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
