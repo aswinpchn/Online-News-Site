@@ -236,50 +236,55 @@ exports.likeArticleObsolete = async (req, res) => {
 }
 
 exports.likeArticle = async (req, res) => {
-	await SQLConnection.beginTransaction()
-	let mongoConnection = await Article.startSession();
-	try {
+  let likeData =  req.body;
+  console.log(likeData);
+  try {
 
-		let likeData = req.body;
-		let query = SQLQueries.addLikes(likeData.user_id, likeData.article_id, likeData.editor_id)
-		await SQLConnection.query(query)
-		let condition = {
-			articleId: likeData.article_id,
-			editorId: likeData.editor_id
-		};
-		likeData = await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } }, { new: true })
-		await mongoConnection.commitTransaction();
-		await mongoConnection.endSession();
-		await SQLConnection.commit()
-		await SQLConnection.end()
-		return res
-			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
-			.send(likeData);
-	} catch (error) {
-		await mongoConnection.abortTransaction();
-		await mongoConnection.endSession();
-		await SQLConnection.rollback()
-		await SQLConnection.end()
-		return res
-			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-			.send(error.message);
-	}
+    let query = `INSERT INTO` +
+      ` likes (user_id, article_id, editor_id, l_time)` +
+      ` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editor_id} , NOW() );`;
+
+    let result = await SQLHelper(query);
+
+    // console.log(result);
+
+    /*
+    Maintaing likeCount seperately, this way, for quickview, we can avoid SQL queries.
+     */
+    let condition = {
+      articleId: likeData.article_id,
+      editorId: likeData.editor_id
+    };
+    let r = await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } }, {new: true});
+    //console.log(r);
+
+    return res
+      .status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
+      .send(likeData);
+  } catch (error) {
+    console.log(`Error while getting user profile details ${error}`);
+
+    if(error.code != null && error.code == 'ER_DUP_ENTRY')
+      return res
+        .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+        .send("You have already like this article before");
+
+    return res
+      .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
+      .send(error.message);
+  }
 }
 
 exports.commentOnArticle = async (req, res) => {
+  let commentData = req.body;
+
+  await SQLConnection.beginTransaction()
+  let mongoConnection = await Article.startSession();
+  mongoConnection.startTransaction();
 	try {
 		let query = SQLQueries.commentOnArticle(req.body.user_id, req.body.article_id, req.body.editor_id, req.body.text)
 		await SQLHelper(query);
-		return res
-		.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
-		.send("");
-	} catch (error) {
-		return res
-			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
-			.send(error.message);
-	}
 
-	try {
 		/*
 		Appending the comment to the article document, incrementing the commentCount.
 		 */
@@ -296,12 +301,19 @@ exports.commentOnArticle = async (req, res) => {
 		let r = await Article.findOneAndUpdate(condition, { $push: { comments: comment }, $inc: { commentCount: 1 } }, { new: true });
 		//console.log(r);
 
+    await mongoConnection.commitTransaction();
+    await mongoConnection.endSession();
+    await SQLConnection.commit()
 
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(commentData);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`);
+
+    await mongoConnection.abortTransaction();
+    await mongoConnection.endSession();
+    await SQLConnection.rollback()
 
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)

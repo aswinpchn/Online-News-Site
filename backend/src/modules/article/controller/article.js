@@ -17,6 +17,7 @@ import Article from '../../../models/mongoDB/article'
  */
 exports.saveArticle = async (req, res) => {
 	let mongoConnection = await Article.startSession();
+  mongoConnection.startTransaction();
 	await SQLConnection.beginTransaction()
 	try {
 		var query
@@ -56,7 +57,6 @@ exports.saveArticle = async (req, res) => {
 		/*
 		Creating a new article document in Article collection.
 		 */
-		mongoConnection.startTransaction();
 		let newArticle = new Article({
 			articleId: article_id,
 			editorId: articleData.editor_id,
@@ -73,7 +73,6 @@ exports.saveArticle = async (req, res) => {
 		await mongoConnection.commitTransaction();
 		await mongoConnection.endSession();
 		await SQLConnection.commit()
-		await SQLConnection.end()
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(createdArticle)
@@ -82,7 +81,6 @@ exports.saveArticle = async (req, res) => {
 		await mongoConnection.abortTransaction();
 		await mongoConnection.endSession();
 		await SQLConnection.rollback()
-		await SQLConnection.end()
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
