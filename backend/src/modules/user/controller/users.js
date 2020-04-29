@@ -9,10 +9,13 @@ import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword, validatePassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'
 import log4js from 'log4js';
+import logger from '../../../../config/logger';
 import Article from '../../../models/mongoDB/article'
 
+
 exports.dummy = async (req, res) => {
-	const logger = log4js.getLogger('log');
+  // The purpose of this method is to test the logging functionality!
+  console.log(req.originalUrl);
 	logger.info('Inside the dummy method in user!');
 	return res
 		.status(constants.STATUS_CODE.ACCEPTED_STATUS)
@@ -25,6 +28,7 @@ exports.dummy = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.createUser = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
 	try {
 		let createdUser
 		var query
@@ -38,11 +42,14 @@ exports.createUser = async (req, res) => {
 		userData.password = EncryptPassword(userData.password)
 		query = SQLQueries.createUser(userData.name, userData.DOB, userData.location, userData.sex, userData.email, userData.password)
 		await SQLHelper(query)
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(createdUser));
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(createdUser)
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -55,6 +62,7 @@ exports.createUser = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.loginUser = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
 	try {
 		var user,
 			isAuth = false,
@@ -69,6 +77,8 @@ exports.loginUser = async (req, res) => {
 				delete user.password
 				user['type'] = "User"
 				isAuth = true
+
+        logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(user));
 				return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user)
 			}
 		}
@@ -83,17 +93,22 @@ exports.loginUser = async (req, res) => {
 				delete user.password
 				user['type'] = "Editor"
 				isAuth = true
+
+        logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(user));
 				return res.status(constants.STATUS_CODE.SUCCESS_STATUS).send(user)
 			}
 		}
 
 		if (!isAuth) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.UNAUTHORIZED_ERROR_STATUS + constants.MESSAGES.AUTHORIZATION_FAILED);
 			return res
 				.status(constants.STATUS_CODE.UNAUTHORIZED_ERROR_STATUS)
 				.send(constants.MESSAGES.AUTHORIZATION_FAILED)
 		}
 	} catch (error) {
 		console.log(`Error while logging in user ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -106,6 +121,7 @@ exports.loginUser = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getUserProfile = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 	try {
 		
 		let query = SQLQueries.getUserDetails(req.params.userId)
@@ -113,12 +129,18 @@ exports.getUserProfile = async (req, res) => {
 
 		if (details.length > 0) {
 			details = details[0]
+
+      logger.info('Returning from ' + req.originalUrl + ' 200' + JSON.stringify(details));
 			return res.status(200).send(details)
 		} else {
+
+      logger.info('Returning from ' + req.originalUrl + ' 204');
 			return res.status(204).json()
 		}
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -131,8 +153,10 @@ exports.getUserProfile = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.updateUserProfile = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
 	try {
 		if (req.body.email == undefined) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + constants.MESSAGES.USER_VALUES_MISSING);
 			return res
 				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_VALUES_MISSING)
@@ -142,6 +166,7 @@ exports.updateUserProfile = async (req, res) => {
 		var query = SQLQueries.checkDuplicateEmailForUser(req.body.email, req.body.userId)
 		var result = await SQLHelper(query)
 		if (result[0][0].TRUE) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -150,6 +175,8 @@ exports.updateUserProfile = async (req, res) => {
 		query = SQLQueries.getEditorId(req.body.email)
 		var result = await SQLHelper(query)
 		if (result[0][0].TRUE) {
+
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -164,9 +191,13 @@ exports.updateUserProfile = async (req, res) => {
 		}
 		query = SQLQueries.updateUserInformation(userObj.email, userObj.password, userObj.name, userObj.sex, userObj.DOB, userObj.location, userObj.userId)
 		await SQLHelper(query)
+
+    logger.info('Returning from ' + req.originalUrl + ' 200');
 		return res.status(200).json()
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -179,17 +210,22 @@ exports.updateUserProfile = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getNotifications = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 	try {
 		var query = SQLQueries.getNotifications(req.params.userId)
 		let details = await SQLHelper(query)
 
 		if (details.length > 0) {
+      logger.info('Returning from ' + req.originalUrl + 200 + JSON.stringify(details));
 			return res.status(200).send(details)
 		} else {
+      logger.info('Returning from ' + req.originalUrl + 204);
 			return res.status(204).json()
 		}
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -236,6 +272,7 @@ exports.likeArticleObsolete = async (req, res) => {
 }
 
 exports.likeArticle = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
   let likeData =  req.body;
   console.log(likeData);
   try {
@@ -258,17 +295,22 @@ exports.likeArticle = async (req, res) => {
     let r = await Article.findOneAndUpdate(condition, { $inc: { likeCount: 1 } }, {new: true});
     //console.log(r);
 
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(likeData));
     return res
       .status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
       .send(likeData);
   } catch (error) {
     console.log(`Error while getting user profile details ${error}`);
 
-    if(error.code != null && error.code == 'ER_DUP_ENTRY')
+    if(error.code != null && error.code == 'ER_DUP_ENTRY') {
+
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + ' You have already like this article before');
       return res
         .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
         .send("You have already like this article before");
+    }
 
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
     return res
       .status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
       .send(error.message);
@@ -276,6 +318,8 @@ exports.likeArticle = async (req, res) => {
 }
 
 exports.commentOnArticle = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+
   let commentData = req.body;
 
   await SQLConnection.beginTransaction()
@@ -305,6 +349,7 @@ exports.commentOnArticle = async (req, res) => {
     await mongoConnection.endSession();
     await SQLConnection.commit()
 
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(commentData));
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(commentData);
@@ -315,6 +360,7 @@ exports.commentOnArticle = async (req, res) => {
     await mongoConnection.endSession();
     await SQLConnection.rollback()
 
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -322,27 +368,34 @@ exports.commentOnArticle = async (req, res) => {
 }
 
 exports.subscribeToACategory = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 	try {
 		let subscribeData = req.body;
 		let query = SQLQueries.subscribeToACategory(subscribeData.user_id, subscribeData.category_name)
 		await SQLHelper(query);
 
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(subscribeData));
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(subscribeData);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`);
 
-		if (error.code = 'ER_NO_REFERENCED_ROW_2')
-			return res
-				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-				.send("There is no category with this category_name");
+		if (error.code = 'ER_NO_REFERENCED_ROW_2') {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + " There is no category with this category_name");
+      return res
+        .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+        .send("There is no category with this category_name");
+    }
 
-		if (error.code == 'ER_DUP_ENTRY')
-			return res
-				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
-				.send("This user has already subscribed this category");
+		if (error.code == 'ER_DUP_ENTRY') {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + "This user has already subscribed this category");
+      return res
+        .status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
+        .send("This user has already subscribed this category");
+    }
 
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -355,6 +408,7 @@ exports.subscribeToACategory = async (req, res) => {
 * The result is sent back as array in chronological order.
 */
 exports.getUserActivity = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 	try {
 		let userId = req.params.userId;
 		let activity = [];
@@ -406,13 +460,15 @@ exports.getUserActivity = async (req, res) => {
 			// a.time and b.time can't be compare directly, we have to use Date.parse to first them seperately and then sort them.
 			return Date.parse(a.time) - Date.parse(b.time);
 		});
-		
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(activity));
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(activity);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`);
 
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -425,6 +481,7 @@ exports.getUserActivity = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.subscribedCategories = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 	try {
 		let query,
 			subscribedCategories = [],
@@ -437,12 +494,14 @@ exports.subscribedCategories = async (req, res) => {
 			subscribedCategories.push(result[index].name.toLowerCase());
 		}
 
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(subscribedCategories));
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(subscribedCategories);
 	} catch (error) {
 		console.log(`Error while getting subscribed category details ${error}`);
 
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);

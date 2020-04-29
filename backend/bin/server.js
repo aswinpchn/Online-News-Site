@@ -8,18 +8,6 @@ import config from '../config'
 import cors from 'cors'
 import constants from '../src/utils/constants'
 
-// https://log4js-node.github.io/log4js-node/api.html
-// https://www.npmjs.com/package/log4js
-const log4js = require('log4js');
-log4js.configure({
-  appenders: { log: { type: 'file', filename: 'file.log' } },
-  categories: { default: { appenders: ['log'], level: 'info' } }
-});
- 
-const logger = log4js.getLogger('log');
-logger.info('Starting the News Paper application!');
-
-
 // router for modules
 let usersRouter = require('../src/modules/user/router/users')
 let editorsRouter = require('../src/modules/editor/router/editors')

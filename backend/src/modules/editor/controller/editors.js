@@ -7,7 +7,7 @@ import SQLQueries from '../../../models/sqlDB/editorQueries'
 import SQLHelper from '../../../models/sqlDB/helper'
 import { EncryptPassword } from '../../../utils/hashPassword'
 import { isUniqueEmail } from '../../../utils/validateEmail'
-
+import logger from '../../../../config/logger';
 
 /**
  * Create editor AND save data in database.
@@ -15,11 +15,13 @@ import { isUniqueEmail } from '../../../utils/validateEmail'
  * @param  {Object} res response object
  */
 exports.createEditor = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
 	try {
 		let createdUser
 		var query
 		var userData = req.body
 		if (!isUniqueEmail(userData.email)) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
@@ -28,11 +30,15 @@ exports.createEditor = async (req, res) => {
 		userData.password = EncryptPassword(userData.password)
 		query = SQLQueries.createEditor(userData.name, userData.email, userData.password)
 		await SQLHelper(query)
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(createdUser));
 		return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(createdUser)
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
