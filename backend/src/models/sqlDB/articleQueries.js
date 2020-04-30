@@ -59,10 +59,10 @@ exports.getBelongingArticles = (type) => {
     return query
 }
 
-// This query will get article details based on article ID and editor ID which is the primary key
+// This query will get article details along with the editor name, this data comes from the view.
 exports.getArticle = (articleId, editorId) => {
     let query = "SELECT name, headlines, body, create_time, modified_time " +
-        "FROM article NATURAL JOIN editor " +
+        "FROM article_view " +
         "WHERE article_id ='" + articleId + "' AND editor_id ='" + editorId + "'"
 
     logger.info('Executing Query ' + query);
