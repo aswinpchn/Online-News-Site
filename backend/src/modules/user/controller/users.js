@@ -147,7 +147,7 @@ exports.updateUserProfile = async (req, res) => {
 				.send(constants.MESSAGES.USER_ALREADY_EXISTS)
 		}
 
-		query = SQLQueries.getEditorId(req.body.email)
+		query = SQLQueries.doesEmailExistForEditor(req.body.email)
 		var result = await SQLHelper(query)
 		if (result[0][0].TRUE) {
 			return res

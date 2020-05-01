@@ -1,6 +1,6 @@
 // SJSU CMPE 226 Fall 2019 TEAM1
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Header from '../common/header';
 import HeadlineCard from './headlineCard';
 import Footer from '../common/footer';
@@ -14,24 +14,41 @@ class Landing extends Component {
     constructor() {
         super();
         this.state = {
-            allArticles: []
+            allArticles: [],
+            isFetched: false
         }
     }
 
     componentDidMount() {
         axios.get(`${Constants.BACKEND_SERVER.URL}/article/headlines?type=${this.props.match.params.category}`)
-        .then((response) => {
-            this.setState({
-                allArticles: response.data
+            .then((response) => {
+                this.setState({
+                    allArticles: response.data,
+                    isFetched: true
+                })
             })
-        })
     }
 
-    render(){
+    render() {
         let RedirectVar
         if (localStorage.getItem('226UserType') === "Editor") {
             RedirectVar = <Redirect to="/editor" />;
-        }	
+        }
+
+        if (this.state.isFetched === false) {
+            return (
+                <div>
+                    {RedirectVar}
+                    {/* <!-- Card with information --> */}
+                    <div class="bg-white pl-5 pr-5 pb-5">
+                        <Header />
+                        <Navigation />
+                        <p className="display-4 text-center p-5">Fetching...</p>
+                        <Footer />
+                    </div>
+                </div>
+            )
+        }
 
         let allHeadlines = [],
             index,
@@ -45,19 +62,19 @@ class Landing extends Component {
         } else {
             for (index in this.state.allArticles) {
                 articleObj = this.state.allArticles[index]
-                allHeadlines.push(<HeadlineCard articleInfo = { articleObj } />)
+                allHeadlines.push(<HeadlineCard articleInfo={articleObj} />)
             }
         }
 
-        return(
+        return (
             <div>
-                { RedirectVar }
+                {RedirectVar}
                 {/* <!-- Card with information --> */}
                 <div class="bg-white pl-5 pr-5 pb-5">
                     <Header />
                     <Navigation />
-                    
-                    { allHeadlines }
+
+                    {allHeadlines}
 
                     <Footer />
                 </div>

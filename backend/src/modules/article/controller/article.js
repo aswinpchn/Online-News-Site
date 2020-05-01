@@ -142,7 +142,7 @@ exports.getHeadlines = async (req, res) => {
 		} else {
 			query = SQLQueries.isValidCategoryName(type)
 			var exists = await SQLHelper(query)
-			if (exists[0][0].TRUE) {
+			if (exists[0][0].FALSE) {
 				console.log("Invalid option")
 				return res
 					.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)

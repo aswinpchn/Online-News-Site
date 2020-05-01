@@ -1,6 +1,6 @@
 // SJSU CMPE 226 Fall 2019 TEAM1
 
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import Header from '../common/header';
 import Footer from '../common/footer';
 import Navigation from '../common/navigation';
@@ -13,49 +13,51 @@ class Landing extends Component {
     constructor() {
         super()
         this.state = {
-            headlines : "Default Headline",
-            author: "John Doe",
-            categories: ["Test"],
-            likeCount: 9999,
-            commentCount: 9999,
-            readCount: 9999,
+            headlines: "",
+            author: "",
+            categories: [""],
+            likeCount: null,
+            commentCount: null,
+            readCount: null,
             comments: [],
             lastModified: null,
             body: null,
-            likeStatus: false
+            likeStatus: false,
+            isFetched: false
         }
     }
 
     componentDidMount() {
-        let  viewerId;
-        if(localStorage.getItem('226UserType') === "Editor"){
+        let viewerId;
+        if (localStorage.getItem('226UserType') === "Editor") {
             viewerId = "Editor"
-        }else{
+        } else {
             viewerId = localStorage.getItem('226UserId');
         }
-        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }/${viewerId}`)
-          .then((response) => {
-              //console.log(response);
+        axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${viewerId}`)
+            .then((response) => {
+                //console.log(response);
 
-              axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`)
-                .then((res) => {
-                    this.setState({
-                        headlines: response.data.headlines,
-                        author: response.data.name,
-                        categories: response.data.categories,
-                        likeCount: response.data.likeCount,
-                        commentCount: response.data.commentCount,
-                        readCount: response.data.readCount,
-                        comments: response.data.comments,
-                        lastModified: response.data.lastModified,
-                        body: response.data.body,
-                        likeStatus: res.data.status,
-                        alreadyLikedError: false
+                axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`)
+                    .then((res) => {
+                        this.setState({
+                            headlines: response.data.headlines,
+                            author: response.data.name,
+                            categories: response.data.categories,
+                            likeCount: response.data.likeCount,
+                            commentCount: response.data.commentCount,
+                            readCount: response.data.readCount,
+                            comments: response.data.comments,
+                            lastModified: response.data.lastModified,
+                            body: response.data.body,
+                            likeStatus: res.data.status,
+                            alreadyLikedError: false,
+                            isFetched: true
+                        });
                     });
-                 });
-          }).catch((error) => {
+            }).catch((error) => {
 
-          });
+            });
     }
 
     // https://reactjs.org/docs/react-component.html#componentdidupdate
@@ -72,7 +74,7 @@ class Landing extends Component {
         axios.post(Constants.BACKEND_SERVER.URL + '/users/like', {
             "article_id": this.props.match.params.articleId,
             "editor_id": this.props.match.params.editorId,
-            "user_id" : localStorage.getItem('226UserId')
+            "user_id": localStorage.getItem('226UserId')
         }).then((response) => {
             this.setState({
                 likeStatus: true,
@@ -87,21 +89,21 @@ class Landing extends Component {
 
     commentTextHandler = (e) => {
         this.setState({
-            commentText : e.target.value
+            commentText: e.target.value
         });
     }
 
     commentClickHandler = async () => {
         // Axios fits with promise natually(Syntax wise), But we can also write with async and await. // https://github.com/axios/axios
         try {
-            await axios.post(Constants.BACKEND_SERVER.URL + '/users/comment/',  {
+            await axios.post(Constants.BACKEND_SERVER.URL + '/users/comment/', {
                 "article_id": this.props.match.params.articleId,
                 "editor_id": this.props.match.params.editorId,
-                "user_id" : localStorage.getItem('226UserId'),
-                "text" : this.state.commentText
+                "user_id": localStorage.getItem('226UserId'),
+                "text": this.state.commentText
             });
 
-            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId }/${this.props.match.params.articleId }`);
+            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}`);
 
             let r = await axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
 
@@ -120,32 +122,48 @@ class Landing extends Component {
                 commentText: ""
             });
 
-        }catch (error) {
+        } catch (error) {
             console.log(error);
         }
     }
 
 
-    render(){
+    render() {
         let redirectVar
         if (!localStorage.getItem('226User')) {
             redirectVar = <Redirect to={`/login?${window.location.pathname}`} />
         }
 
+        if (this.state.isFetched === false) {
+            return (
+                <div>
+                    {redirectVar}
+                    {/* <!-- Card with information --> */}
+                    <div class="bg-white pl-5 pr-5 pb-5">
+                        <Header />
+                        <Navigation />
+                        <p className="display-4 p-5 text-center">Fetching...</p>
+                        <Footer />
+                    </div>
+                </div>
+
+            )
+        }
+
         var headline = this.state.headlines;
         let categories = [];
         for (let index = 0; index < this.state.categories.length; index++) {
-            categories.push(<span class="bg-secondary text-white ml-2 p-1 rounded">{ this.state.categories[index] }</span>)
+            categories.push(<span class="bg-secondary text-white ml-2 p-1 rounded">{this.state.categories[index]}</span>)
         }
 
-        let likeStatus = (this.state.likeStatus?<i className="fas fa-heart"></i>:<i className="far fa-heart"></i>);
+        let likeStatus = (this.state.likeStatus ? <i className="fas fa-heart"></i> : <i className="far fa-heart"></i>);
 
-        let alreadyLikedError = (this.state.alreadyLikedError? <div className="alert alert-danger" role="alert">
+        let alreadyLikedError = (this.state.alreadyLikedError ? <div className="alert alert-danger" role="alert">
             You have already like this article!
-        </div>:<div></div>);
+        </div> : <div></div>);
 
         let comments = [];
-        for(let i = 0; i < this.state.comments.length; i++) {
+        for (let i = 0; i < this.state.comments.length; i++) {
             comments.push(<div className="row">
                 <div className="col-md-2">
                     {this.state.comments[i].userId}
@@ -159,9 +177,9 @@ class Landing extends Component {
             </div>);
         }
 
-        return(
+        return (
             <div>
-                { redirectVar }
+                {redirectVar}
                 {/* <!-- Card with information --> */}
                 <div class="bg-white pl-5 pr-5 pb-5">
                     <Header />
@@ -205,7 +223,7 @@ class Landing extends Component {
                                     <div className="input-group-prepend">
                                         <span className="input-group-text" id="addon-wrapping">Enter Comment</span>
                                     </div>
-                                    <input type="text" className="form-control" aria-label="Username" aria-describedby="addon-wrapping" id="commentEntry" onChange={this.commentTextHandler} value={this.state.commentText}/>
+                                    <input type="text" className="form-control" aria-label="Username" aria-describedby="addon-wrapping" id="commentEntry" onChange={this.commentTextHandler} value={this.state.commentText} />
                                     <div className="input-group-append">
                                         <button className="btn btn-outline-secondary" type="button" id="commentButton" disabled={!this.state.commentText} onClick={this.commentClickHandler}>
                                             Comment
@@ -215,7 +233,7 @@ class Landing extends Component {
                             </div>
                         </div>
                     </div>
-                        
+
                     <Footer />
                 </div>
             </div>
