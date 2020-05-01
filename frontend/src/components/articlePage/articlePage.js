@@ -103,7 +103,7 @@ class Landing extends Component {
                 "text": this.state.commentText
             });
 
-            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
+            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}/Editor`);
 
             let r = await axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
 

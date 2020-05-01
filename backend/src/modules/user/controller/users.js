@@ -11,6 +11,7 @@ import { isUniqueEmail } from '../../../utils/validateEmail'
 import log4js from 'log4js';
 import logger from '../../../../config/logger';
 import Article from '../../../models/mongoDB/article'
+import getTime from '../../../utils/getTime'
 
 
 exports.dummy = async (req, res) => {
@@ -339,7 +340,7 @@ exports.commentOnArticle = async (req, res) => {
 		let comment = {
 			userId: commentData.user_id,
 			text: commentData.text,
-			commentTime: Date.now()
+			commentTime: getTime.getTime()
 		}
 		//console.log(comment);
 		let r = await Article.findOneAndUpdate(condition, { $push: { comments: comment }, $inc: { commentCount: 1 } }, { new: true });

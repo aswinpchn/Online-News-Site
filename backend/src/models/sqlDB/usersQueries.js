@@ -1,4 +1,5 @@
 import logger from '../../../config/logger';
+import getTime from '../../utils/getTime';
 
 // This query will store user information in the database
 exports.createUser = (name, DOB, location, sex, email, password) => {
@@ -110,7 +111,7 @@ exports.getNotifications = (userId) => {
 exports.addLikes = (user_id, article_id, editor_id) => {
     let query = `INSERT INTO` +
         ` likes (user_id, article_id, editor_id, l_time)` +
-        ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , NOW() );`;
+        ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , '${getTime.getTime()}' );`;
 
   logger.info('Executing Query ' + query);
     return query;
@@ -120,7 +121,7 @@ exports.addLikes = (user_id, article_id, editor_id) => {
 exports.commentOnArticle = (user_id, article_id, editor_id, text) => {
     let query = `INSERT INTO` +
         ` comments (user_id, article_id, editor_id, text, c_time)` +
-        ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , '${text}' , NOW() );`;
+        ` VALUES ( ${user_id} , ${article_id} , ${editor_id} , '${text}' , '${getTime.getTime()}' );`;
 
   logger.info('Executing Query ' + query);
     return query
@@ -130,7 +131,7 @@ exports.commentOnArticle = (user_id, article_id, editor_id, text) => {
 exports.subscribeToACategory = (user_id, category_name) => {
     let query = `INSERT INTO` +
         ` subscribed_to (user_id, name, s_time)` +
-        ` VALUES ( ${user_id} , '${category_name}' , NOW() );`;
+        ` VALUES ( ${user_id} , '${category_name}' , '${getTime.getTime()}' );`;
 
   logger.info('Executing Query ' + query);
     return query;

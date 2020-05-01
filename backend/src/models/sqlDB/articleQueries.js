@@ -1,4 +1,5 @@
 import logger from '../../../config/logger';
+import getTime from '../../utils/getTime';
 
 
 // This query will get name of editor based on thier ID
@@ -81,7 +82,7 @@ exports.getBelongsTO = (articleId, editorId) => {
 
 // This query will insert a record into views table whenever a user views an article
 exports.updateViews = (viewerId, editorId, articleId) => {
-    let query = `INSERT INTO views (user_id,editor_id,article_id,r_time) VALUES (${viewerId},${editorId},${articleId}, NOW())`
+    let query = `INSERT INTO views (user_id,editor_id,article_id,r_time) VALUES (${viewerId},${editorId},${articleId}, '${getTime.getTime()}')`
 
     logger.info('Executing Query ' + query);
     return query
