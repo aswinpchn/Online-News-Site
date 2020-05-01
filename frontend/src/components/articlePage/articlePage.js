@@ -103,7 +103,7 @@ class Landing extends Component {
                 "text": this.state.commentText
             });
 
-            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}`);
+            let res = await axios.get(Constants.BACKEND_SERVER.URL + `/article/view/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
 
             let r = await axios.get(Constants.BACKEND_SERVER.URL + `/article/likes/${this.props.match.params.editorId}/${this.props.match.params.articleId}/${localStorage.getItem('226UserId')}`);
 
@@ -132,6 +132,8 @@ class Landing extends Component {
         let redirectVar
         if (!localStorage.getItem('226User')) {
             redirectVar = <Redirect to={`/login?${window.location.pathname}`} />
+        } else if(localStorage.getItem('226UserType') === "Editor") {
+            redirectVar = <Redirect to={`/editor`} />
         }
 
         if (this.state.isFetched === false) {

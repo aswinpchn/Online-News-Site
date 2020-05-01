@@ -8,7 +8,7 @@ import SQLConnection from '../../../models/sqlDB/index'
 import SQLQueries from '../../../models/sqlDB/articleQueries'
 import SQLHelper from '../../../models/sqlDB/helper'
 import Article from '../../../models/mongoDB/article'
-
+import logger from '../../../../config/logger';
 
 /**
  * Save a article written by the editor in database.
@@ -17,8 +17,11 @@ import Article from '../../../models/mongoDB/article'
  */
 exports.saveArticle = async (req, res) => {
 	let mongoConnection = await Article.startSession();
+  mongoConnection.startTransaction();
 	await SQLConnection.beginTransaction()
-	try {
+
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+  try {
 		var query
 		var articleData = req.body
 		var date = new Date();
@@ -29,7 +32,8 @@ exports.saveArticle = async (req, res) => {
 		var result = await SQLHelper(query)
 
 		if (result.length <= 0) {
-			return res
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.EDITOR_DOES_NOT_EXIST);
+      return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.EDITOR_DOES_NOT_EXIST)
 		}
@@ -56,7 +60,6 @@ exports.saveArticle = async (req, res) => {
 		/*
 		Creating a new article document in Article collection.
 		 */
-		mongoConnection.startTransaction();
 		let newArticle = new Article({
 			articleId: article_id,
 			editorId: articleData.editor_id,
@@ -73,8 +76,10 @@ exports.saveArticle = async (req, res) => {
 		await mongoConnection.commitTransaction();
 		await mongoConnection.endSession();
 		await SQLConnection.commit()
-		await SQLConnection.end()
-		return res
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(createdArticle));
+
+    return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send(createdArticle)
 	} catch (error) {
@@ -82,7 +87,8 @@ exports.saveArticle = async (req, res) => {
 		await mongoConnection.abortTransaction();
 		await mongoConnection.endSession();
 		await SQLConnection.rollback()
-		await SQLConnection.end()
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -95,7 +101,8 @@ exports.saveArticle = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.modifyArticle = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl + ' Body ' + JSON.stringify(req.body));
+  try {
 
 		var query
 		var articleData = req.body
@@ -106,6 +113,7 @@ exports.modifyArticle = async (req, res) => {
 		var result = await SQLHelper(query)
 
 		if (result.length <= 0) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.EDITOR_DOES_NOT_EXIST);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
 				.send(constants.MESSAGES.EDITOR_DOES_NOT_EXIST)
@@ -114,10 +122,14 @@ exports.modifyArticle = async (req, res) => {
 		query = SQLQueries.updateArticle(articleData.body, modified_time, articleData.article_id, articleData.editor_id)
 		var result = await SQLHelper(query)
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + " Updated Article Successfully");
+
+    return res
 			.status(constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS)
 			.send("Updated Article Successfully")
 	} catch (error) {
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -131,12 +143,15 @@ exports.modifyArticle = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getHeadlines = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+  try {
 		var query
 		var type = req.query.type
 		if (type.toLowerCase() == 'all') {
 			var result = await Article.find({})
-			return res
+
+      logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result.reverse()));
+      return res
 				.status(constants.STATUS_CODE.SUCCESS_STATUS)
 				.send(result.reverse())
 		} else {
@@ -144,6 +159,8 @@ exports.getHeadlines = async (req, res) => {
 			var exists = await SQLHelper(query)
 			if (exists[0][0].FALSE) {
 				console.log("Invalid option")
+
+        logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + " Invalid option : " + type);
 				return res
 					.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 					.send("Invalid option : " + type)
@@ -162,13 +179,17 @@ exports.getHeadlines = async (req, res) => {
 				}
 
 			}
-			return res
+
+      logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result.reverse()));
+      return res
 				.status(constants.STATUS_CODE.SUCCESS_STATUS)
 				.send(allHeadlines.reverse())
 		}
 
 	} catch (error) {
 		console.log(`Error while retrieving headlines ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -183,11 +204,14 @@ exports.getHeadlines = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getArticle = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+
+  try {
 		var resultArticle = {}
 		var query = SQLQueries.getArticle(req.params.articleId, req.params.editorId)
 		var article = await SQLHelper(query)
 		if (article.length <= 0) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + constants.MESSAGES.USER_NOT_FOUND);
 			return res
 				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.USER_NOT_FOUND)
@@ -210,6 +234,7 @@ exports.getArticle = async (req, res) => {
 		query = SQLQueries.getBelongsTO(req.params.articleId, req.params.editorId)
 		var categories = await SQLHelper(query)
 		if (categories.length <= 0) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS + constants.MESSAGES.INVALID_RESULT);
 			return res
 				.status(constants.STATUS_CODE.BAD_REQUEST_ERROR_STATUS)
 				.send(constants.MESSAGES.INVALID_RESULT)
@@ -240,11 +265,14 @@ exports.getArticle = async (req, res) => {
 			resultArticle.readCount++;
 		}
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(resultArticle));
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(resultArticle)
 	} catch (error) {
 		console.log(`Error while  retrieving article ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -259,20 +287,23 @@ exports.getArticle = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getAllCategories = async (req, res) => {
-
-	try {
+  logger.info('Inside ' + req.originalUrl);
+  try {
 		let query = SQLQueries.getAllCategories();
 		var categories = await SQLHelper(query)
 		if (categories.length <= 0) {
+      logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.NOT_FOUND_STATUS + constants.MESSAGES.NO_CATEGORY_PRESENT);
 			return res
 				.status(constants.STATUS_CODE.NOT_FOUND_STATUS)
 				.send(constants.MESSAGES.NO_CATEGORY_PRESENT)
 		} else {
-			return res
+      logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(categories));
+      return res
 				.status(constants.STATUS_CODE.SUCCESS_STATUS)
 				.send(categories)
 		}
 	} catch (error) {
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)
@@ -281,7 +312,9 @@ exports.getAllCategories = async (req, res) => {
 }
 
 exports.getLikeStatus = async (req, res) => {
-	try {
+  logger.info('Inside ' + req.originalUrl);
+
+  try {
 		let query = SQLQueries.hasUserLikedTheArticle(req.params.userId, req.params.articleId, req.params.editorId)
 		let result = await SQLHelper(query);
 		let likeStatus = {};
@@ -292,10 +325,13 @@ exports.getLikeStatus = async (req, res) => {
 			likeStatus.status = false;
 		}
 
-		return res
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(likeStatus));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(likeStatus);
 	} catch (error) {
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message);
@@ -309,17 +345,22 @@ exports.getLikeStatus = async (req, res) => {
  * @param  {Object} res response object
  */
 exports.getHeadlinesForEditor = async (req, res) => {
+  logger.info('Inside ' + req.originalUrl);
 
-	try {
+  try {
 		var result = await Article.find({
 			editorId: req.params.editorId
 		})
-		return res
+
+    logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result.reverse()));
+
+    return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
 			.send(result.reverse())
-
 	} catch (error) {
 		console.log(`Error while retrieving headlines ${error}`)
+
+    logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
 			.status(constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS)
 			.send(error.message)

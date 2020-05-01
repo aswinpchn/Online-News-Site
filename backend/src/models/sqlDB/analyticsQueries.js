@@ -1,4 +1,6 @@
-// This query get the number of likes each article of a particular editor 
+import logger from '../../../config/logger';
+
+// This query get the number of likes each article of a particular editor
 // has got and return the TOP 10 values along with id of the article and headline
 exports.mostLikedArticles = (editorId) => {
     let query = "" +
@@ -8,6 +10,8 @@ exports.mostLikedArticles = (editorId) => {
         "GROUP BY article_id,headlines " +
         "ORDER BY likeCount DESC " +
         "LIMIT 10";
+
+    logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -18,6 +22,8 @@ exports.categoryReadByLocation = (category, editorId) => {
         "FROM belongs_to NATURAL JOIN article NATURAL JOIN views JOIN user ON views.user_id = user.user_id " +
         "WHERE belongs_to.name = '" + category + "' AND article.editor_id = " + editorId + " " +
         "GROUP BY location";
+
+    logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -45,6 +51,7 @@ exports.getArticleReadsByAge = (editor_id, age_bracket) => {
     // END $$
 
     let query = `CALL getArticleReadsByAge(${editor_id}, "${age_bracket}");`;
+    logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -70,12 +77,15 @@ exports.getArticleReadsByTimeOfTheDay = (editor_id, time_of_the_day) => {
     // END $$
     // DELIMITER; $$
     let query = `CALL getArticleReadsByTimeOfTheDay(${editor_id}, "${time_of_the_day}");`;
+    logger.info('Executing Query ' + query);
     return query;
 }
 
 // This query will retrieve the number of times each article has by a particular editor has been read
 exports.getGraphValues = (editor_id) => {
     var query = "SELECT article_id,COUNT(user_id) as read_count FROM views WHERE editor_id = '" + editor_id + "' GROUP BY article_id";
+
+    logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -99,6 +109,8 @@ exports.getMostReadArticle = (editor_id) => {
                 ") AS articles_read" +
             ")" +
         ");";
+
+    logger.info('Executing Query ' + query);
     return query;
 }
 
@@ -107,5 +119,7 @@ exports.getMostReadCategory = (editor_id) => {
     var query = "SELECT category.name,COUNT(user_id) AS Read_Count " +
         "FROM category LEFT JOIN ( views NATURAL JOIN belongs_to) ON belongs_to.name = category.name AND views.editor_id ='" + editor_id + "'" +
         "GROUP BY category.name";
+
+    logger.info('Executing Query ' + query);
     return query;
 }

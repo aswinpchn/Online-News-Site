@@ -1,24 +1,34 @@
+import logger from '../../../config/logger';
+
 // This query will store editor details in the database
 exports.createEditor = (name, email, password) => {
     let query = "INSERT INTO editor (name, email, password) VALUES ('" + name + "', '" + email + "', '" + password + "')"
+
+    logger.info('Executing Query ' + query);
     return query
 }
 
 // This query will retreive editor details based on their ID
 exports.getEditorProfile = (editorId) => {
     let query = "SELECT email, name FROM editor WHERE editor_id = '" + editorId + "'"
+
+    logger.info('Executing Query ' + query);
     return query
 }
 
 // This stored prodecure checks if the email ID exists for an user
 exports.doesEmailExistForUser = (email) => {
     let query = `CALL doesEmailExistForUser("${email}")`
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
 // This stored prodecure checks if the email ID exists for an editor who has an editor Id other than the requestor
 exports.checkDuplicateEmailForEditor = (email, editorId) => {
     let query = `CALL checkDuplicateEmailForEditor("${email}", ${editorId})`
+
+  logger.info('Executing Query ' + query);
     return query
 }
 
@@ -28,5 +38,7 @@ exports.updateEditorInformation = (email, name, editorId, password) => {
     if (password) {
         query = `CALL updateEditorInformation("${email}", "${name}", ${editorId}, "${password}")`
     }
+
+  logger.info('Executing Query ' + query);
     return query
 }
