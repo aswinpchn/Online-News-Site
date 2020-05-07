@@ -1,0 +1,883 @@
+[{
+  "_id": {
+    "$oid": "5e86fb12bb29681a45aaa179"
+  },
+  "articleId": 23,
+  "editorId": 3,
+  "likeCount": 1,
+  "comments": [],
+  "__v": 0,
+  "readCount": 24,
+  "headline": "My headline",
+  "editorName": "Jayasurya",
+  "categories": [
+    "Business",
+    "Politics"
+  ]
+},{
+  "_id": {
+    "$oid": "5e86fb19bb29681a45aaa17a"
+  },
+  "articleId": 24,
+  "editorId": 3,
+  "likeCount": 8,
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5e8712df8c0be0229abb13b3"
+      },
+      "userId": "5",
+      "text": "Test comment......",
+      "commentTime": {
+        "$date": "2020-04-03T10:41:35.831Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8713048c0be0229abb13b4"
+      },
+      "userId": "5",
+      "text": "Test comment tadka",
+      "commentTime": {
+        "$date": "2020-04-03T10:42:12.900Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e871406ae1cf122ac68774a"
+      },
+      "userId": "5",
+      "text": "Test comment tadka",
+      "commentTime": {
+        "$date": "2020-04-03T10:46:30.914Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8714c14ef25322d24ea93e"
+      },
+      "userId": "5",
+      "text": "Test comment tadka",
+      "commentTime": {
+        "$date": "2020-04-03T10:49:37.115Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eacd274649ff90ad59a2de7"
+      },
+      "userId": "52",
+      "text": "Comment time test.",
+      "commentTime": {
+        "$date": "2020-05-02T08:52:52Z"
+      }
+    }
+  ],
+  "__v": 0,
+  "readCount": 70,
+  "headline": "My headline 1",
+  "editorName": "Jayasurya",
+  "categories": [
+    "Business",
+    "Politics"
+  ]
+},{
+  "_id": {
+    "$oid": "5e8a8f5bbf7c806b34b72a89"
+  },
+  "categories": [
+    "Sports",
+    "Science"
+  ],
+  "likeCount": 2,
+  "readCount": 8,
+  "articleId": 27,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "News article 1",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eac8fae4ea4d107f41a99a5"
+      },
+      "userId": "5",
+      "text": "bad article",
+      "commentTime": {
+        "$date": "2020-05-01T21:07:58.440Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e8aa427c8be17a74c3ccc81"
+  },
+  "categories": [
+    "Sports"
+  ],
+  "likeCount": 2,
+  "readCount": 56,
+  "articleId": 28,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "Tokyo Olympics Organizers Considering July 2021 for Opening Ceremony 2021 for Opening Opening Ceremony 2021 for Opening",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5e8b08f7c6f22c12b6812ad1"
+      },
+      "userId": "30",
+      "text": "Lazy article!",
+      "commentTime": {
+        "$date": "2020-04-06T10:48:23.761Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8b090cc6f22c12b6812ad2"
+      },
+      "userId": "30",
+      "text": "Lazy article!",
+      "commentTime": {
+        "$date": "2020-04-06T10:48:44.290Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8b0b95c6f22c12b6812ad3"
+      },
+      "userId": "30",
+      "text": "Lazy article!",
+      "commentTime": {
+        "$date": "2020-04-06T10:59:33.783Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8b0bd0c6f22c12b6812ad4"
+      },
+      "userId": "30",
+      "text": "Lazy article!",
+      "commentTime": {
+        "$date": "2020-04-06T11:00:32.111Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8b0c15c6f22c12b6812ad5"
+      },
+      "userId": "30",
+      "text": "Cant even write an interesting article?",
+      "commentTime": {
+        "$date": "2020-04-06T11:01:41.092Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e96999344b7c129a0b48e29"
+      },
+      "userId": "5",
+      "text": "Comment",
+      "commentTime": {
+        "$date": "2020-04-15T05:20:19.484Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eaa1079a147cd088271157c"
+      },
+      "userId": "30",
+      "text": "Hey Comment.",
+      "commentTime": {
+        "$date": "2020-04-29T23:40:41.039Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e8ab98b01c9260a8f4eb196"
+  },
+  "categories": [
+    "Politics"
+  ],
+  "likeCount": 2,
+  "readCount": 80,
+  "articleId": 1,
+  "editorId": 8,
+  "editorName": "Editor",
+  "headline": "Coronavirus wreaks Havoc in the USA.",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5e8ac09301c9260a8f4eb197"
+      },
+      "userId": "30",
+      "text": "This is a nice article about coronavirus",
+      "commentTime": {
+        "$date": "2020-04-06T05:39:31.323Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8ae79a0572a20ebbccf9ed"
+      },
+      "userId": "30",
+      "text": "The number of cases has crossed 1 million.",
+      "commentTime": {
+        "$date": "2020-04-06T08:26:02.865Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8aee350572a20ebbccf9ee"
+      },
+      "userId": "30",
+      "text": "US is leading in the number of cases.",
+      "commentTime": {
+        "$date": "2020-04-06T08:54:13.984Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8aeedc0572a20ebbccf9ef"
+      },
+      "userId": "30",
+      "text": "Strict lockdown measures are easing the pressure in healthcare systems.",
+      "commentTime": {
+        "$date": "2020-04-06T08:57:00.645Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8b0269c6f22c12b6812ad0"
+      },
+      "userId": "30",
+      "text": "Various vaccines and treatment trials are underway.",
+      "commentTime": {
+        "$date": "2020-04-06T10:20:25.445Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8e338ebeb9935524a25fff"
+      },
+      "userId": "28",
+      "text": "This is my first comment",
+      "commentTime": {
+        "$date": "2020-04-08T20:26:54.150Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8e340cbeb9935524a26000"
+      },
+      "userId": "32",
+      "text": "This is my second comment after first",
+      "commentTime": {
+        "$date": "2020-04-08T20:29:00.463Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e8e34bcbeb9935524a26001"
+      },
+      "userId": "33",
+      "text": "this is my third comment after second",
+      "commentTime": {
+        "$date": "2020-04-08T20:31:56.447Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e94087d8c9e9318e4c57e2f"
+      },
+      "userId": "30",
+      "text": "The number of cases has crossed 1 million.",
+      "commentTime": {
+        "$date": "2020-04-13T06:36:45.055Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5e9408808c9e9318e4c57e30"
+      },
+      "userId": "30",
+      "text": "The number of cases has crossed 1 million.",
+      "commentTime": {
+        "$date": "2020-04-13T06:36:48.512Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eaf0f249da3104fd0b6cf9e"
+      },
+      "userId": "53",
+      "text": "wow much corona many virus",
+      "commentTime": {
+        "$date": "2020-05-04T01:36:20Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eaf10269da3104fd0b6cfa0"
+      },
+      "userId": "54",
+      "text": "you are right rajeev i am wrong",
+      "commentTime": {
+        "$date": "2020-05-04T01:40:38Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e8e8f9ade7b0c56dc468ac9"
+  },
+  "categories": [
+    "Science",
+    "Business"
+  ],
+  "likeCount": 3,
+  "readCount": 96,
+  "articleId": 1,
+  "editorId": 9,
+  "editorName": "Rajeev Editor",
+  "headline": "Damn good article",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e9417ce244c84686cc6d344"
+  },
+  "categories": [
+    "Politics",
+    "Science"
+  ],
+  "likeCount": 1,
+  "readCount": 4,
+  "articleId": 2,
+  "editorId": 9,
+  "editorName": "Rajeev Editor",
+  "headline": "How a Premier U.S. Drug Company Became a Virus ‘Super Spreader’",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eac89e0fa88b022b0b03341"
+      },
+      "userId": "5",
+      "text": "Adding a comment",
+      "commentTime": {
+        "$date": "2020-05-01T20:43:12.102Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e94181f244c84686cc6d345"
+  },
+  "categories": [
+    "Politics"
+  ],
+  "likeCount": 2,
+  "readCount": 2,
+  "articleId": 3,
+  "editorId": 9,
+  "editorName": "Rajeev Editor",
+  "headline": "Another Coronavirus Casualty: Spring\nA season of rebirth unfolds without baseball, family reunions, bluebonnet viewings, and familiar religious gatherings.",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eaf0f7f9da3104fd0b6cf9f"
+      },
+      "userId": "53",
+      "text": "Wow a ray of hope in this darkness filled void",
+      "commentTime": {
+        "$date": "2020-05-04T01:37:51Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eaf104e9da3104fd0b6cfa1"
+      },
+      "userId": "54",
+      "text": "Indeed the light at the end of the tunnel",
+      "commentTime": {
+        "$date": "2020-05-04T01:41:18Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e941878244c84686cc6d346"
+  },
+  "categories": [
+    "Politics"
+  ],
+  "likeCount": 0,
+  "readCount": 1,
+  "articleId": 4,
+  "editorId": 9,
+  "editorName": "Rajeev Editor",
+  "headline": "People lined up in their cars at a food distribution site in San Antonio",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5e955d207f2c211b71527ff9"
+  },
+  "categories": [
+    "Business",
+    "Politics"
+  ],
+  "likeCount": 11,
+  "readCount": 32,
+  "articleId": 1,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Serious Questions about integrity and credibility about China.",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5ea8da865499350b514a5086"
+      },
+      "userId": "30",
+      "text": "Test0",
+      "commentTime": {
+        "$date": "2020-04-29T01:38:14.873Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8da8e5499350b514a5087"
+      },
+      "userId": "30",
+      "text": "Test1",
+      "commentTime": {
+        "$date": "2020-04-29T01:38:22.335Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8da935499350b514a5088"
+      },
+      "userId": "30",
+      "text": "Try",
+      "commentTime": {
+        "$date": "2020-04-29T01:38:27.106Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8da985499350b514a5089"
+      },
+      "userId": "30",
+      "text": "Final Try",
+      "commentTime": {
+        "$date": "2020-04-29T01:38:32.319Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8dc44ee67c60b9ef778da"
+      },
+      "userId": "30",
+      "text": "Transaction test comments.",
+      "commentTime": {
+        "$date": "2020-04-29T01:45:40.114Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8dce08e8f020bbbab1bad"
+      },
+      "userId": "30",
+      "text": "Transaction test comments.",
+      "commentTime": {
+        "$date": "2020-04-29T01:48:16.798Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8df814c649b0c1fb99177"
+      },
+      "userId": "30",
+      "text": "Transaction test c...",
+      "commentTime": {
+        "$date": "2020-04-29T01:59:29.417Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea67ed09fad5e6a10179f64"
+  },
+  "categories": [
+    "Business"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 29,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "Large, Troubled Companies Got Bailout Money in Small-Business Loan Program",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea6815b75d84b6f4493b558"
+  },
+  "categories": [
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 30,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "You Don’t Need a Mixer (Just a Whisk!) for This One-Bowl Shortbread",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea682ef30e0346cd831dddd"
+  },
+  "categories": [
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 31,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "The Most Comforting Chicken",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea6bfd90de72a5b234f79e8"
+  },
+  "categories": [
+    "Business",
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 8,
+  "articleId": 2,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "This is also a very long headline",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea6c0aff161645b5adbd78a"
+  },
+  "categories": [
+    "Sports"
+  ],
+  "likeCount": 0,
+  "readCount": 2,
+  "articleId": 3,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "This is a very long headline",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8de9f79f34f0bde5b9ec4"
+  },
+  "categories": [
+    "Politics",
+    "Science"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 4,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "New Headline",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8e08f82c00e0c433dfb2c"
+  },
+  "categories": [
+    "Politics",
+    "Science"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 5,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Headline",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8e4d95f74bb0cf4cce0d2"
+  },
+  "categories": [
+    "Politics",
+    "Science"
+  ],
+  "likeCount": 1,
+  "readCount": 2,
+  "articleId": 6,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Hey",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eac8975fa88b022b0b03340"
+      },
+      "userId": "5",
+      "text": "Commenting on article",
+      "commentTime": {
+        "$date": "2020-05-01T20:41:25.954Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8e527772f570d0738e85c"
+  },
+  "categories": [
+    "Politics"
+  ],
+  "likeCount": 2,
+  "readCount": 3,
+  "articleId": 7,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Poet",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eb2567d8624733f40a233e3"
+      },
+      "userId": "5",
+      "text": "Comment 1",
+      "commentTime": {
+        "$date": "2020-05-06T13:17:33Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eb256808624733f40a233e4"
+      },
+      "userId": "5",
+      "text": "Comment 2",
+      "commentTime": {
+        "$date": "2020-05-06T13:17:36Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8e5fa8010810d3939e309"
+  },
+  "categories": [
+    "Sports"
+  ],
+  "likeCount": 4,
+  "readCount": 7,
+  "articleId": 8,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Pot",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5ea90d1afdafe61286606181"
+      },
+      "userId": "30",
+      "text": "Tate",
+      "commentTime": {
+        "$date": "2020-04-29T05:14:02.144Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5ea8e68a7e3eff0d68447189"
+  },
+  "categories": [
+    "Science"
+  ],
+  "likeCount": 11,
+  "readCount": 16,
+  "articleId": 9,
+  "editorId": 10,
+  "editorName": "editorZero",
+  "headline": "Pte",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5ea8ebb45ae0530e261ad769"
+      },
+      "userId": "30",
+      "text": "Test comments",
+      "commentTime": {
+        "$date": "2020-04-29T02:51:32.184Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5ea8ebb75ae0530e261ad76a"
+      },
+      "userId": "30",
+      "text": "TTT",
+      "commentTime": {
+        "$date": "2020-04-29T02:51:35.975Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eac928a2dabab23f44a419e"
+  },
+  "categories": [
+    "Science"
+  ],
+  "likeCount": 1,
+  "readCount": 6,
+  "articleId": 32,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "This Should Be V.R.’s Moment. Why Is It Still So Niche?",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eac9588660c1141f4d2662d"
+      },
+      "userId": "5",
+      "text": "More than two decades?",
+      "commentTime": {
+        "$date": "2020-05-01T21:32:56.138Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eac97844d518c169026f94e"
+      },
+      "userId": "5",
+      "text": "Two decades?",
+      "commentTime": {
+        "$date": "2020-05-02T04:41:24Z"
+      }
+    },
+    {
+      "_id": {
+        "$oid": "5eac99ccb764063d70fa0461"
+      },
+      "userId": "5",
+      "text": "Whyyyyyyy?",
+      "commentTime": {
+        "$date": "2020-05-02T04:51:08Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eaf11539da3104fd0b6cfa2"
+  },
+  "categories": [
+    "Science",
+    "Politics",
+    "Business",
+    "Sports",
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 1,
+  "articleId": 33,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "A City in Oklahoma Ends Face Mask Requirement After Store Employees Threatened",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eb217bc746c3f452c3f4ff6"
+  },
+  "categories": [
+    "Food"
+  ],
+  "likeCount": 1,
+  "readCount": 1,
+  "articleId": 34,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "A Wendy’s With No Burgers as Meat Production Is Hit",
+  "comments": [
+    {
+      "_id": {
+        "$oid": "5eb32b7faf52a5475cd35a45"
+      },
+      "userId": "5",
+      "text": "Comment 1",
+      "commentTime": {
+        "$date": "2020-05-07T04:26:23Z"
+      }
+    }
+  ],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eb256ec8624733f40a233e5"
+  },
+  "categories": [
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 2,
+  "articleId": 35,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "Food article",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eb3149e61487e57a84caeae"
+  },
+  "categories": [
+    "Politics"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 36,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "An article",
+  "comments": [],
+  "__v": 0
+},{
+  "_id": {
+    "$oid": "5eb32bb6af52a5475cd35a46"
+  },
+  "categories": [
+    "Food"
+  ],
+  "likeCount": 0,
+  "readCount": 0,
+  "articleId": 37,
+  "editorId": 3,
+  "editorName": "Jayasurya",
+  "headline": "New food article",
+  "comments": [],
+  "__v": 0
+}]
