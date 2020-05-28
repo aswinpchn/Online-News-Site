@@ -4,6 +4,7 @@
 
 import SQLEditorQueries from '../models/sqlDB/editorQueries'
 import SQLUserQueries from '../models/sqlDB/usersQueries'
+import SQLConnection from '../models/sqlDB/index'
 
 var isUniqueEmail = (email) => {
     return new Promise( async(resolve) => {
