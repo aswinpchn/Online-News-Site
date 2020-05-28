@@ -6,7 +6,6 @@
 import constants from '../../../utils/constants'
 import SQLConnection from '../../../models/sqlDB/index'
 import SQLQueries from '../../../models/sqlDB/articleQueries'
-import SQLHelper from '../../../models/sqlDB/helper'
 import Article from '../../../models/mongoDB/article'
 import logger from '../../../../config/logger';
 

@@ -4,7 +4,6 @@
 
 import constants from '../../../utils/constants'
 import SQLQueries from '../../../models/sqlDB/editorQueries'
-import SQLHelper from '../../../models/sqlDB/helper'
 import {
 	EncryptPassword
 } from '../../../utils/hashPassword'
@@ -33,7 +32,7 @@ exports.createEditor = async (req, res) => {
 
 		userData.password = EncryptPassword(userData.password)
 		query = SQLQueries.createEditor(userData.name, userData.email, userData.password)
-		await SQLHelper(query)
+		await SQLConnection.promise().query(query);
 
 		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(createdUser));
 		return res
@@ -58,13 +57,13 @@ exports.getEditorProfile = async (req, res) => {
 	logger.info('Inside ' + req.originalUrl);
 	try {
 		var query = SQLQueries.getEditorProfile(req.params.editorId)
-		let details = await SQLHelper(query)
+		let details = await SQLConnection.promise().query(query);
 
-		if (details.length > 0) {
-			details = details[0]
+		if (details[0].length > 0) {
+			details = details[0][0]
 
-			logger.info('Returning from ' + req.originalUrl + ' 200 ' + JSON.stringify(details));
-			return res.status(200).send(details)
+			logger.info('Returning from ' + req.originalUrl + ' 200 ' + JSON.stringify(details[0]));
+			return res.status(200).send(details[0])
 		} else {
 			logger.info('Returning from ' + req.originalUrl + ' 204 ');
 			return res.status(204).json()
@@ -96,8 +95,8 @@ exports.updateEditorProfile = async (req, res) => {
 		}
 
 		var query = SQLQueries.doesEmailExistForUser(req.body.email)
-		var result = await SQLHelper(query)
-		if (result[0][0].TRUE) {
+		var result = await SQLConnection.promise().query(query);
+		if (result[0][0][0].TRUE) {
 			logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
@@ -105,8 +104,8 @@ exports.updateEditorProfile = async (req, res) => {
 		}
 
 		query = SQLQueries.checkDuplicateEmailForEditor(req.body.email, req.body.editorId)
-		var result = await SQLHelper(query)
-		if (result[0][0].TRUE) {
+		var result = await SQLConnection.promise().query(query);
+		if (result[0][0][0].TRUE) {
 			logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
@@ -121,7 +120,7 @@ exports.updateEditorProfile = async (req, res) => {
 			editorObj.password = EncryptPassword(req.body.password)
 		}
 		SQLQueries.updateEditorInformation(editorObj.email, editorObj.name, editorObj.editorId, editorObj.password)
-		await SQLHelper(query)
+		await SQLConnection.promise().query(query);
 
 		logger.info('Returning from ' + req.originalUrl + ' 200');
 		return res.status(200).json()

@@ -3,7 +3,7 @@
 'use strict'
 
 import constants from '../../../utils/constants'
-import SQLHelper from '../../../models/sqlDB/helper'
+import SQLConnection from '../../../models/sqlDB/index';
 import SQLQueries from '../../../models/sqlDB/analyticsQueries'
 import logger from '../../../../config/logger';
 
@@ -17,12 +17,12 @@ exports.mostLikedArticles = async (req, res) => {
 	try {
 
 		let query = SQLQueries.mostLikedArticles(req.params.editorId)
-		let result = await SQLHelper(query)
+		let result = await SQLConnection.promise().query(query);
 
-		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result));
+		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result)
+			.send(result[0])
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
 
@@ -44,13 +44,13 @@ exports.categoryReadByLocation = async (req, res) => {
 	try {
 
 		let query = SQLQueries.categoryReadByLocation(req.params.category, req.params.editorId)
-		let result = await SQLHelper(query)
+		let result = await SQLConnection.promise().query(query);
 
-		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result));
+		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result)
+			.send(result[0])
 	} catch (error) {
 		console.log(`Error while creating user ${error}`)
 
@@ -100,13 +100,13 @@ exports.getArticleReadsByAge = async (req, res) => {
 		// END $$
 
 		let query = `CALL getArticleReadsByAge(${req.body.editor_id});`;
-		let result = await SQLHelper(query);
+		let result = await SQLConnection.promise().query(query);
 
-		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
+		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0][0]));
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result[0]);
+			.send(result[0][0]);
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
 
@@ -155,13 +155,13 @@ exports.getArticleReadsByTimeOfTheDay = async (req, res) => {
 
 		let query = `CALL getArticleReadsByTimeOfTheDay(${req.body.editor_id});`;
 
-		let result = await SQLHelper(query);
+		let result = await SQLConnection.promise().query(query);
 
-		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0]));
+		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(result[0][0]));
 
 		return res
 			.status(constants.STATUS_CODE.SUCCESS_STATUS)
-			.send(result[0]);
+			.send(result[0][0]);
 
 	} catch (error) {
 		console.log(`Error while getting user profile details ${error}`)
@@ -181,20 +181,21 @@ exports.getMostFrequentlyReadArticles = async (req, res) => {
 		var editor_id = req.params.editorId
 		var response = {}
 		var query = SQLQueries.getGraphValues(editor_id)
-		var graphvalues = await SQLHelper(query)
+		var graphvalues = await SQLConnection.promise().query(query);
+		console.log(graphvalues);
 
-		if (graphvalues.length > 0) {
+		if (graphvalues[0].length > 0) {
 			response.graph = []
-			for (var i = 0; i < graphvalues.length; i++) {
-				response.graph.push(graphvalues[i])
+			for (var i = 0; i < graphvalues[0].length; i++) {
+				response.graph.push(graphvalues[0][i])
 			}
 		}
 
 		query = SQLQueries.getMostReadArticle(editor_id);
-		var mostReadArticle = await SQLHelper(query);
+		var mostReadArticle = await SQLConnection.promise().query(query);
 
-		if (mostReadArticle.length > 0) {
-			response.mostReadArticle = mostReadArticle
+		if (mostReadArticle[0].length > 0) {
+			response.mostReadArticle = mostReadArticle[0]
 		} else {
 			response.message = constants.MESSAGES.NO_ARTICLE_PRESENT
 		}
@@ -221,12 +222,12 @@ exports.getMostFrequentlyReadCategories = async (req, res) => {
 		var editor_id = req.params.editorId
 		var response = {}
 		var query = SQLQueries.getMostReadCategory(editor_id)
-		var mostReadCategory = await (SQLHelper(query))
+		var mostReadCategory = await SQLConnection.promise().query(query);
 
-		if (mostReadCategory.length > 0) {
+		if (mostReadCategory[0].length > 0) {
 			response.categoryvalue = []
-			for (var i = 0; i < mostReadCategory.length; i++) {
-				response.categoryvalue.push(mostReadCategory[i])
+			for (var i = 0; i < mostReadCategory[0].length; i++) {
+				response.categoryvalue.push(mostReadCategory[0][i])
 			}
 		} else {
 			response.message = constants.MESSAGES.NO_CATEGORY_PRESENT

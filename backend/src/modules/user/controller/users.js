@@ -5,7 +5,6 @@
 import constants from '../../../utils/constants'
 import SQLConnection from '../../../models/sqlDB/index'
 import SQLQueries from '../../../models/sqlDB/usersQueries'
-import SQLHelper from '../../../models/sqlDB/helper'
 import {
 	EncryptPassword,
 	validatePassword
@@ -47,7 +46,7 @@ exports.createUser = async (req, res) => {
 
 		userData.password = EncryptPassword(userData.password)
 		query = SQLQueries.createUser(userData.name, userData.DOB, userData.location, userData.sex, userData.email, userData.password)
-		await SQLHelper(query)
+		await SQLConnection.promise().query(query);
 
 		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(createdUser));
 		return res
@@ -75,11 +74,13 @@ exports.loginUser = async (req, res) => {
 			query,
 			loginData = req.body
 		query = SQLQueries.loginUser(loginData.email)
-		user = await SQLHelper(query)
-		if (user.length > 0) {
-			const validate = validatePassword(loginData.password, user[0].password)
+		user = await SQLConnection.promise().query(query);
+		console.log(user);
+
+		if (user[0].length > 0) {
+			const validate = validatePassword(loginData.password, user[0][0].password)
 			if (validate) {
-				user = user[0]
+				user = user[0][0]
 				delete user.password
 				user['type'] = "User"
 				isAuth = true
@@ -90,12 +91,12 @@ exports.loginUser = async (req, res) => {
 		}
 
 		query = SQLQueries.loginEditor(loginData.email)
-		user = await SQLHelper(query)
+		user = await SQLConnection.promise().query(query);
 
-		if (user.length > 0) {
-			const validate = validatePassword(loginData.password, user[0].password)
+		if (user[0].length > 0) {
+			const validate = validatePassword(loginData.password, user[0][0].password)
 			if (validate) {
-				user = user[0]
+				user = user[0][0]
 				delete user.password
 				user['type'] = "Editor"
 				isAuth = true
@@ -131,10 +132,10 @@ exports.getUserProfile = async (req, res) => {
 	try {
 
 		let query = SQLQueries.getUserDetails(req.params.userId)
-		let details = await SQLHelper(query)
+		let details = await SQLConnection.promise().query(query);
 
-		if (details.length > 0) {
-			details = details[0]
+		if (details[0].length > 0) {
+			details = details[0][0]
 
 			logger.info('Returning from ' + req.originalUrl + ' 200' + JSON.stringify(details));
 			return res.status(200).send(details)
@@ -170,8 +171,8 @@ exports.updateUserProfile = async (req, res) => {
 
 		// var query = SQLQueries.getUserId(req.body.email, req.body.userId)
 		var query = SQLQueries.checkDuplicateEmailForUser(req.body.email, req.body.userId)
-		var result = await SQLHelper(query)
-		if (result[0][0].TRUE) {
+		var result = await SQLConnection.promise().query(query);
+		if (result[0][0][0].TRUE) {
 			logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
 				.status(constants.STATUS_CODE.CONFLICT_ERROR_STATUS)
@@ -179,8 +180,8 @@ exports.updateUserProfile = async (req, res) => {
 		}
 
 		query = SQLQueries.doesEmailExistForEditor(req.body.email)
-		var result = await SQLHelper(query)
-		if (result[0][0].TRUE) {
+		var result = await SQLConnection.promise().query(query);
+		if (result[0][0][0].TRUE) {
 
 			logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.CONFLICT_ERROR_STATUS + constants.MESSAGES.USER_ALREADY_EXISTS);
 			return res
@@ -196,7 +197,7 @@ exports.updateUserProfile = async (req, res) => {
 			userObj.password = EncryptPassword(req.body.password)
 		}
 		query = SQLQueries.updateUserInformation(userObj.email, userObj.password, userObj.name, userObj.sex, userObj.DOB, userObj.location, userObj.userId)
-		await SQLHelper(query)
+		await SQLConnection.promise().query(query);
 
 		logger.info('Returning from ' + req.originalUrl + ' 200');
 		return res.status(200).json()
@@ -219,11 +220,11 @@ exports.getNotifications = async (req, res) => {
 	logger.info('Inside ' + req.originalUrl);
 	try {
 		var query = SQLQueries.getNotifications(req.params.userId)
-		let details = await SQLHelper(query)
+		let details = await SQLConnection.promise().query(query);
 
-		if (details.length > 0) {
-			logger.info('Returning from ' + req.originalUrl + 200 + JSON.stringify(details));
-			return res.status(200).send(details)
+		if (details[0].length > 0) {
+			logger.info('Returning from ' + req.originalUrl + 200 + JSON.stringify(details[0]));
+			return res.status(200).send(details[0])
 		} else {
 			logger.info('Returning from ' + req.originalUrl + 204);
 			return res.status(204).json()
@@ -246,9 +247,7 @@ exports.likeArticleObsolete = async (req, res) => {
 			` likes (user_id, article_id, editor_id, l_time)` +
 			` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editor_id} , NOW() );`;
 
-		await SQLHelper(query);
-
-		// console.log(result);
+		await SQLConnection.promise().query(query);
 
 		/*
 		Maintaing likeCount seperately, this way, for quickview, we can avoid SQL queries.
@@ -293,8 +292,7 @@ exports.likeArticle = async (req, res) => {
 			` likes (user_id, article_id, editor_id, l_time)` +
 			` VALUES ( ${likeData.user_id} , ${likeData.article_id} , ${likeData.editor_id} , NOW() );`;
 
-		let result = await SQLHelper(query);
-
+		let result = await SQLConnection.promise().query(query);
 		// console.log(result);
 
 		/*
@@ -345,7 +343,7 @@ exports.commentOnArticle = async (req, res) => {
 	mongoConnection.startTransaction();
 	try {
 		let query = SQLQueries.commentOnArticle(req.body.user_id, req.body.article_id, req.body.editor_id, req.body.text)
-		await SQLHelper(query);
+		await SQLConnection.promise().query(query);
 
 		/*
 		Appending the comment to the article document, incrementing the commentCount.
@@ -399,7 +397,7 @@ exports.subscribeToACategory = async (req, res) => {
 	try {
 		let subscribeData = req.body;
 		let query = SQLQueries.subscribeToACategory(subscribeData.user_id, subscribeData.category_name)
-		await SQLHelper(query);
+		await SQLConnection.promise().query(query);
 
 		logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(subscribeData));
 		return res
@@ -441,17 +439,19 @@ exports.getUserActivity = async (req, res) => {
 		let activity = [];
 
 		let viewedQuery = SQLQueries.getViews(userId)
-		let viewedResult = await SQLHelper(viewedQuery);
+		let viewedResult = await SQLConnection.promise().query(viewedQuery);
+		console.log(viewedResult);
 
-		for (let i = 0; i < JSON.parse(JSON.stringify(viewedResult)).length; i++) {
-			activity.push(JSON.parse(JSON.stringify(viewedResult))[i]);
+		for (let i = 0; i < JSON.parse(JSON.stringify(viewedResult[0])).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(viewedResult[0]))[i]);
 		}
 
 		let likedQuery = SQLQueries.getLikes(userId)
-		let likedResult = await SQLHelper(likedQuery);
+		let likedResult = await SQLConnection.promise().query(likedQuery);
+		console.log(likedResult);
 
-		for (let i = 0; i < JSON.parse(JSON.stringify(likedResult)).length; i++) {
-			activity.push(JSON.parse(JSON.stringify(likedResult))[i]);
+		for (let i = 0; i < JSON.parse(JSON.stringify(likedResult[0])).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(likedResult[0]))[i]);
 		}
 
 		/*
@@ -474,10 +474,11 @@ exports.getUserActivity = async (req, res) => {
 		}
 
 		let subscribedQuery = SQLQueries.getSubscribes(userId)
-		let subscribedResult = await SQLHelper(subscribedQuery);
+		let subscribedResult = await SQLConnection.promise().query(subscribedQuery);
+		console.log(subscribedResult);
 
-		for (let i = 0; i < JSON.parse(JSON.stringify(subscribedResult)).length; i++) {
-			activity.push(JSON.parse(JSON.stringify(subscribedResult))[i]);
+		for (let i = 0; i < JSON.parse(JSON.stringify(subscribedResult[0])).length; i++) {
+			activity.push(JSON.parse(JSON.stringify(subscribedResult[0]))[i]);
 		}
 
 		activity.sort((a, b) => {

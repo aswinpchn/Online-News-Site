@@ -2,21 +2,20 @@
 
 `use strict`
 
-import SQLHelper from '../models/sqlDB/helper'
 import SQLEditorQueries from '../models/sqlDB/editorQueries'
 import SQLUserQueries from '../models/sqlDB/usersQueries'
 
 var isUniqueEmail = (email) => {
     return new Promise( async(resolve) => {
         var query = SQLEditorQueries.doesEmailExistForUser(email)
-        var result = await SQLHelper(query)
-        if(result[0][0].TRUE) {
+        var result =await SQLConnection.promise().query(query);
+        if(result[0][0][0].TRUE) {
             resolve(false)
         }
         
         query = SQLUserQueries.doesEmailExistForEditor(email)
-        var result = await SQLHelper(query)
-        if(result[0][0].TRUE) {
+        var result = await SQLConnection.promise().query(query);
+        if(result[0][0][0].TRUE) {
             resolve(false)
         }
     
