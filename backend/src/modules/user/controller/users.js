@@ -323,7 +323,7 @@ exports.commentOnArticle = async (req, res) => {
 
   let commentData = req.body;
 
-  await SQLConnection.beginTransaction()
+  await SQLConnection.promise().beginTransaction()
   let mongoConnection = await Article.startSession();
   mongoConnection.startTransaction();
 	try {
@@ -348,7 +348,7 @@ exports.commentOnArticle = async (req, res) => {
 
     await mongoConnection.commitTransaction();
     await mongoConnection.endSession();
-    await SQLConnection.commit()
+    await SQLConnection.promise().commit()
 
     logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.CREATED_SUCCESSFULLY_STATUS + JSON.stringify(commentData));
 		return res
@@ -359,7 +359,7 @@ exports.commentOnArticle = async (req, res) => {
 
     await mongoConnection.abortTransaction();
     await mongoConnection.endSession();
-    await SQLConnection.rollback()
+    await SQLConnection.promise().rollback()
 
     logger.info('Error in ' + req.originalUrl + constants.STATUS_CODE.INTERNAL_SERVER_ERROR_STATUS + error.message);
 		return res
@@ -489,10 +489,11 @@ exports.subscribedCategories = async (req, res) => {
 			result,
 			index;
 		query = SQLQueries.getSubscribedTo(req.params.userId)
-		result = await SQLHelper(query);
-
-		for (index in result) {
-			subscribedCategories.push(result[index].name.toLowerCase());
+		result = await SQLConnection.promise().query(query);
+		// console.log(result); // The result will be in format [rows, fields], so you have to read result[0]
+		
+		for (index in result[0]) {
+			subscribedCategories.push(result[0][index].name.toLowerCase());
 		}
 
     logger.info('Returning from ' + req.originalUrl + constants.STATUS_CODE.SUCCESS_STATUS + JSON.stringify(subscribedCategories));

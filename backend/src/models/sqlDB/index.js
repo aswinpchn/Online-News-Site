@@ -2,7 +2,7 @@
 
 `use strict`
 
-var mysql = require('mysql');
+var mysql = require('mysql2');
 
 var con = mysql.createConnection({
 	host: process.env.RDS_HOST,
@@ -14,7 +14,19 @@ var con = mysql.createConnection({
 
 con.connect(function(err) {
 	if (err) throw err;
-	else console.log("Connected to server!");
+	else console.log("MYSQL - Connected to server!");
 });
 
 module.exports = con;
+
+/*
+
+	You have to use 'mysql2'.
+	I tried to user async/await for createConnection itself, but after long research I found that if you cant have a centralized conenction creation using async/await.
+	If you are writing createConnection and query one after another at all places we can do that. (https://www.npmjs.com/package/mysql2#using-promise-wrapper)
+	
+	So what I am doing is that, I get normal mysql2 connection and then (MySQL2 exposes a .promise() function on Connections, to "upgrade" an existing non-promise connection to use promise)
+
+	result = await SQLConnection.promise().query(query);
+	console.log(result); // The result will be in format [rows, fields], so you have to read result[0] when using mysql2.query()
+	*/
