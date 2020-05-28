@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.13.0",
-    "axios": "^0.18.0",
+    "axios": "^0.19.2",
     "chart.js": "^2.9.3",
     "react": "^16.5.0",
     "react-chartjs-2": "^2.9.0",
@@ -13,7 +13,14 @@
     "react-dom": "^16.5.0",
     "react-router": "^4.3.1",
     "react-router-dom": "^4.3.1",
-    "react-scripts": "^1.1.5"
+    "react-scripts": "^1.1.5",
+    "minimist": "^1.2.5",
+    "acorn": "^7.2.0",
+    "mem": "^6.1.0",
+    "eslint": "^7.1.0",
+    "braces": "^3.0.2",
+    "js-yaml": "^3.14.0",
+    "webpack-dev-server": "^3.11.0"
   },
   "scripts": {
     "start": "react-scripts start",
