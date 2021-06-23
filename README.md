@@ -1,5 +1,3 @@
 # News
 
-This is base folder for the Online Newspaper project for CMPE 226.
-
-## references
+This is a Prototype of a Newspaper system where there is a user facing News reading features and Editor accessible news posting feature.
